@@ -2,7 +2,7 @@ package com.smh.fam.somethinginteresting.game.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.smh.fam.somethinginteresting.game.GdxGameCore;
+import com.smh.fam.somethinginteresting.game.Core.GdxGameCore;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {

@@ -1,11 +1,10 @@
-package com.smh.fam.somethinginteresting.game;
+package com.smh.fam.somethinginteresting.game.Core;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.physics.box2d.Box2D;
+import com.smh.fam.somethinginteresting.game.Core.Box2D_Simulator;
 import com.smh.fam.somethinginteresting.game.State.GameStateManager;
 
 public class GdxGameCore extends ApplicationAdapter {
