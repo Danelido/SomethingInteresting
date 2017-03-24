@@ -16,7 +16,7 @@ public class GdxGameCore extends ApplicationAdapter {
 		img = new Texture("badlogic.jpg"); // Test comment 3, we don't really know this.
 
 		// Test comment from Axel :)
-
+		// Hello kurwa
 	}
 
 	@Override
