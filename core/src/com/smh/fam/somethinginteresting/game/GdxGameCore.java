@@ -13,7 +13,7 @@ public class GdxGameCore extends ApplicationAdapter {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg"); // Test comment 3, we don't really know this.
+		img = new Texture("badlogic.jpg");
 
 	}
 
