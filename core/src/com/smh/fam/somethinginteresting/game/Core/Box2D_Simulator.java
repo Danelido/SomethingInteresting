@@ -16,8 +16,9 @@ import com.badlogic.gdx.physics.box2d.World;
 
 public class Box2D_Simulator {
     private float simulatedTime = 0.0f;
-    private World world;
-    private Box2DDebugRenderer debugRenderer;
+    public World world;
+    public Box2DDebugRenderer debugRenderer;
+
 
     private final int VELOCITY_ITERATIONS = 2;
     private final int POSITION_ITERATIONS = 2;
@@ -26,7 +27,6 @@ public class Box2D_Simulator {
         Box2D.init();
         world = new World(new Vector2(0, -10), true);
         debugRenderer = new Box2DDebugRenderer();
-
         createBox();
     }
 
