@@ -3,7 +3,7 @@ package com.smh.fam.somethinginteresting.game.State;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.smh.fam.somethinginteresting.game.GdxGameCore;
+import com.smh.fam.somethinginteresting.game.Core.GdxGameCore;
 
 
 /**

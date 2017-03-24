@@ -8,16 +8,15 @@ import com.smh.fam.somethinginteresting.game.Core.Box2D_Simulator;
 import com.smh.fam.somethinginteresting.game.State.GameStateManager;
 
 public class GdxGameCore extends ApplicationAdapter {
-<<<<<<< HEAD:core/src/com/smh/fam/somethinginteresting/game/GdxGameCore.java
+
 
 
 
 	public static final int VIRTUAL_WIDTH = 1920;
 	public static final int VIRTUAL_HEIGHT = VIRTUAL_WIDTH / 16 * 9; // 16:9 format
-=======
-	private static final int VIRTUAL_WIDTH = 1920;
-	private static final int VIRTUAL_HEIGHT = VIRTUAL_WIDTH / 16 * 9; // 16:9 format
->>>>>>> origin/master:core/src/com/smh/fam/somethinginteresting/game/Core/GdxGameCore.java
+
+
+
 
 	private SpriteBatch batch;  // The renderer
 	private GameStateManager gsm;
@@ -27,18 +26,17 @@ public class GdxGameCore extends ApplicationAdapter {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-<<<<<<< HEAD:core/src/com/smh/fam/somethinginteresting/game/GdxGameCore.java
 
 		gsm = new GameStateManager();
 
 
 
 
-=======
+
 		gsm = new GameStateManager();
 
 		box2D_simulator = new Box2D_Simulator();
->>>>>>> origin/master:core/src/com/smh/fam/somethinginteresting/game/Core/GdxGameCore.java
+
 	}
 
 	@Override
