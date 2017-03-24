@@ -11,8 +11,8 @@ public class GdxGameCore extends ApplicationAdapter {
 
 
 
-	private static final int VIRTUAL_WIDTH = 1920;
-	private static final int VIRTUAL_HEIGHT = VIRTUAL_WIDTH / 16 * 9; // 16:9 format
+	public static final int VIRTUAL_WIDTH = 1920;
+	public static final int VIRTUAL_HEIGHT = VIRTUAL_WIDTH / 16 * 9; // 16:9 format
 
 	private SpriteBatch batch;  // The renderer
 	private GameStateManager gsm;
@@ -21,12 +21,12 @@ public class GdxGameCore extends ApplicationAdapter {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-<<<<<<< HEAD
-		gsm = new GameStateManager();
-=======
-		img = new Texture("badlogic.jpg");
 
->>>>>>> origin/master
+		gsm = new GameStateManager();
+
+
+
+
 	}
 
 	@Override
