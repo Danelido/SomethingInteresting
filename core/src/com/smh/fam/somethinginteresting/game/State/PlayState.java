@@ -35,5 +35,7 @@ public class PlayState extends GameState {
     @Override
     public void render(SpriteBatch batch) {
 
+
+
     }
 }

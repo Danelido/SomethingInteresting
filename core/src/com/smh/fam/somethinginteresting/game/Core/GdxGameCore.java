@@ -15,9 +15,6 @@ public class GdxGameCore extends ApplicationAdapter {
 	public static final int VIRTUAL_WIDTH = 1920;
 	public static final int VIRTUAL_HEIGHT = VIRTUAL_WIDTH / 16 * 9; // 16:9 format
 
-
-
-
 	private SpriteBatch batch;  // The renderer
 	private GameStateManager gsm;
 	private Box2D_Simulator box2D_simulator;
