@@ -21,7 +21,12 @@ public class GdxGameCore extends ApplicationAdapter {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
+<<<<<<< HEAD
 		gsm = new GameStateManager();
+=======
+		img = new Texture("badlogic.jpg");
+
+>>>>>>> origin/master
 	}
 
 	@Override
