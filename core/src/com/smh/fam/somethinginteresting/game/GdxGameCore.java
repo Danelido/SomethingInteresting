@@ -15,7 +15,7 @@ public class GdxGameCore extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		img = new Texture("badlogic.jpg");
 
-
+		// Test comment from Axel :)
 
 	}
 
