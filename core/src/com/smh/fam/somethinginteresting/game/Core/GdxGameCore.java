@@ -11,12 +11,6 @@ public class GdxGameCore extends ApplicationAdapter {
 	public static final int VIRTUAL_WIDTH = 1920;
 	public static final int VIRTUAL_HEIGHT = VIRTUAL_WIDTH / 16 * 9; // 16:9 format
 
-<<<<<<< HEAD
-	private SpriteBatch batch;  // The renderer
-=======
-
-
->>>>>>> origin/master
 	private GameStateManager gsm;
 	private SpriteBatch batch;
 
@@ -29,6 +23,14 @@ public class GdxGameCore extends ApplicationAdapter {
 
 	@Override
 	public void render () {
+		Gdx.gl.glClearColor(0, 0.0f, 0.0f, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+		gsm.update();
+
+		batch.begin();
+		gsm.render(batch);
+		batch.end();
 
 	}
 

@@ -34,21 +34,8 @@ public class PlayState extends GameState {
 
     @Override
     public void render(SpriteBatch batch) {
-        Gdx.gl.glClearColor(0, 0.0f, 0.0f, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-
-
-        batch.begin();
-        gsm.render(batch); // Only use batch.draw() in the states
-        batch.end();
-
-<<<<<<< HEAD
-
-
-
-=======
         box2D_simulator.debugRenderer.render(box2D_simulator.world, camera.combined);
->>>>>>> origin/master
+
     }
 }
