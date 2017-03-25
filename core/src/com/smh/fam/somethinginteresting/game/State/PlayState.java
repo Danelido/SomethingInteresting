@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.Array;
 import com.smh.fam.somethinginteresting.game.Core.Box2D_Simulator;
 import com.smh.fam.somethinginteresting.game.Core.CoreValues_Static;
 import com.smh.fam.somethinginteresting.game.Core.GdxGameCore;
+import com.smh.fam.somethinginteresting.game.Core.TextureStorage;
 import com.smh.fam.somethinginteresting.game.Game.Obstacle;
 import com.smh.fam.somethinginteresting.game.Game.Player;
 
@@ -28,6 +29,7 @@ public class PlayState extends GameState {
     private Camera camera;
 
     private Box2D_Simulator box2D_simulator;
+    private TextureStorage textureStorage;
     private InputProcessor inputProcessor;
 
     private Vector2 camera_firstTouch = new Vector2(); // belonds to camera movement code, might be tmeporary
@@ -44,9 +46,10 @@ public class PlayState extends GameState {
         inputHandler();
         camera = new OrthographicCamera(CoreValues_Static.VIRTUAL_WIDTH, CoreValues_Static.VIRTUAL_HEIGHT);
         box2D_simulator = new Box2D_Simulator();
+        textureStorage = new TextureStorage();
 
 
-        player = new Player(box2D_simulator.getWorld(), new Vector2(0.f, 0.f));
+        player = new Player(box2D_simulator.getWorld(), textureStorage, new Vector2(0.f, 0.f));
         Obstacle obstacle =  new Obstacle(box2D_simulator.getWorld(), new Vector2(-100.f, -100.f), new Vector2(-120.f, -200.f));
         Obstacle obstacle2 = new Obstacle(box2D_simulator.getWorld(), new Vector2(100, -200.f), new Vector2(-100.f, -210.f));
         Gdx.input.setInputProcessor(inputProcessor); // Registers input from our "inputProcessor" variable

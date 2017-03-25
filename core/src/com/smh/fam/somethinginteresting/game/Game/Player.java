@@ -13,7 +13,9 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.smh.fam.somethinginteresting.game.Core.CoreValues_Static;
+import com.smh.fam.somethinginteresting.game.Core.TextureStorage;
 
+import java.io.FileNotFoundException;
 import java.io.PipedReader;
 
 import static com.smh.fam.somethinginteresting.game.Core.RenderingHelper.convertToBatchPlacement;
@@ -29,8 +31,12 @@ public class Player {
     private final float WIDTH = 30f; // Box2D coordinates
     private final float HEIGHT = 30f;
 
-    public Player(World world, Vector2 position){
-        texture = new Texture(Gdx.files.internal("player.png"));
+    public Player(World world, TextureStorage textureStorage, Vector2 position){
+        try {
+            texture = textureStorage.getTexture("player.png");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
