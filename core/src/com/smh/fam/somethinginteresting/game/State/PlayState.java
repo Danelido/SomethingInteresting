@@ -35,6 +35,7 @@ public class PlayState extends GameState {
         player = new Player(box2D_simulator.getWorld(), new Vector2(0.f, 0.f));
         Obstacle obstacle =  new Obstacle(box2D_simulator.getWorld(), new Vector2(-100.f, -100.f), new Vector2(-120.f, -200.f));
         Obstacle obstacle2 = new Obstacle(box2D_simulator.getWorld(), new Vector2(100, -200.f), new Vector2(-100.f, -210.f));
+        Gdx.input.setInputProcessor(inputProcessor); // Registers input from our "inputProcessor" variable
     }
 
     @Override
@@ -72,12 +73,13 @@ public class PlayState extends GameState {
 
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-
+                Gdx.app.log("TouchEvent" , " Finger touching screen");
                 return false;
             }
 
             @Override
             public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+                Gdx.app.log("TouchEvent" , "Finger released from screen");
                 return false;
             }
 

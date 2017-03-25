@@ -17,7 +17,7 @@ public class GdxGameCore extends ApplicationAdapter {
 
 	@Override
 	public void create () {
-		gsm = new GameStateManager();
+		gsm = new GameStateManager(this);
 		batch = new SpriteBatch();
 	}
 

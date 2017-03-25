@@ -1,6 +1,7 @@
 package com.smh.fam.somethinginteresting.game.State;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.smh.fam.somethinginteresting.game.Core.GdxGameCore;
 
 import java.util.Stack;
 
@@ -14,8 +15,7 @@ public class GameStateManager {
     private Stack<GameState> Gamestates;
 
 
-
-        public GameStateManager()
+        public GameStateManager(GdxGameCore gameCore)
         {
             Gamestates = new Stack<GameState>();
             Gamestates.push(new PlayState(this));
@@ -36,8 +36,6 @@ public class GameStateManager {
             if(!Gamestates.empty())
                 Gamestates.peek().render(batch);
         }
-
-
 
 
 }
