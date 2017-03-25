@@ -136,20 +136,9 @@ public class PlayState extends GameState {
             public boolean touchDragged(int screenX, int screenY, int pointer) {
                 player.fingerDraggedOnScreen(screenX, screenY, pointer);
                 if(!player.playerIsTargeted()) {
-                   // TEMPORARY CODE, TESTING CAMERA
-                   float camera_speed = 10;
-                   float x_camera_direction = 0;
-                   float y_camera_direction = 0;
-
-                   if (camera_firstTouch.x < screenX) x_camera_direction = -1;
-                   else x_camera_direction = 1;
-                   if (camera_firstTouch.y < screenY) y_camera_direction = 1;
-                   else y_camera_direction = -1;
-
-                   camera_firstTouch.x = screenX;
-                   camera_firstTouch.y = screenY;
-                   camera.translate(x_camera_direction * camera_speed, y_camera_direction * camera_speed, 0);
-               }
+                    camera.translate(camera_firstTouch.x-screenX, screenY-camera_firstTouch.y, 0);
+                    camera_firstTouch = new Vector2(screenX, screenY);
+                }
                 return false;
             }
 
