@@ -13,7 +13,6 @@ import com.badlogic.gdx.physics.box2d.World;
  */
 
 public class Player {
-    private World world;
     private Body simulationBody;
     public Player(World world, Vector2 position){
         BodyDef bodyDef = new BodyDef();
