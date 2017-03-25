@@ -27,7 +27,6 @@ public class Box2D_Simulator {
     public Box2D_Simulator(){
         Box2D.init();
         world = new World(new Vector2(0f, 0f), true);
-        setGravity(new Vector2(0f, CoreValues_Static.GRAVITY_CONSTANT));
 
         debugRenderer = new Box2DDebugRenderer();
     }

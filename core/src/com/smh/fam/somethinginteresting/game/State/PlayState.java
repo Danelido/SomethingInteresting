@@ -2,6 +2,7 @@ package com.smh.fam.somethinginteresting.game.State;
 
 import com.badlogic.gdx.Gdx;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -29,12 +30,15 @@ public class PlayState extends GameState {
     private ShapeRenderer shapeRenderer;
     private InputProcessor inputProcessor;
 
+    private final boolean ACCELEROMETER_AVAILABLE;
+
     private Vector2 camera_firstTouch = new Vector2(); // belonds to camera movement code, might be temporary
     private Vector2 camera_momentum = new Vector2(0.0f, 0.0f);
     private float camera_momentumDecay = 0.001f;
 
     protected PlayState(GameStateManager gsm) {
         super(gsm);
+        ACCELEROMETER_AVAILABLE = Gdx.input.isPeripheralAvailable(Input.Peripheral.Accelerometer);
     }
 
     private Player player;
@@ -45,6 +49,7 @@ public class PlayState extends GameState {
         inputHandler();
         camera = new OrthographicCamera(CoreValues_Static.VIRTUAL_WIDTH, CoreValues_Static.VIRTUAL_HEIGHT);
         box2D_simulator = new Box2D_Simulator();
+        box2D_simulator.setGravity(new Vector2(0f, CoreValues_Static.GRAVITY_CONSTANT));
         textureStorage = new TextureStorage();
         shapeRenderer = new ShapeRenderer();
 
@@ -75,7 +80,14 @@ public class PlayState extends GameState {
     @Override
     public void update() {
         float deltaT = Gdx.graphics.getDeltaTime();
+
+
         box2D_simulator.simulate(deltaT);
+        if (ACCELEROMETER_AVAILABLE){
+            Vector2 gravityVec = new Vector2(-Gdx.input.getAccelerometerY(), Gdx.input.getAccelerometerX());
+            gravityVec = gravityVec.nor().scl(CoreValues_Static.GRAVITY_CONSTANT);
+            box2D_simulator.setGravity(gravityVec);
+        }
 
         camera_momentum = camera_momentum.scl((float) Math.pow(camera_momentumDecay, deltaT));
         camera.translate(camera_momentum.x, camera_momentum.y, 0);
