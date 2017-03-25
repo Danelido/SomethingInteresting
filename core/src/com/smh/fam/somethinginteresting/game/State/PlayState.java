@@ -28,7 +28,7 @@ public class PlayState extends GameState {
     public void init() {
         camera = new OrthographicCamera(GdxGameCore.VIRTUAL_WIDTH, GdxGameCore.VIRTUAL_HEIGHT);
         box2D_simulator = new Box2D_Simulator();
-        player = new Player(box2D_simulator.world, new Vector2(0.f, 0.f));
+        player = new Player(box2D_simulator.getWorld(), new Vector2(0.f, 0.f));
     }
 
     @Override
@@ -40,7 +40,7 @@ public class PlayState extends GameState {
     @Override
     public void render(SpriteBatch batch) {
 
-        box2D_simulator.debugRenderer.render(box2D_simulator.world, camera.combined);
+        box2D_simulator.debugRenderer.render(box2D_simulator.getWorld(), camera.combined);
 
     }
 }

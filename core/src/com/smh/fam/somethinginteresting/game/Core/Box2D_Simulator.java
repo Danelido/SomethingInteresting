@@ -17,7 +17,7 @@ import com.badlogic.gdx.utils.Array;
 
 public class Box2D_Simulator {
     private float simulatedTime = 0.0f;
-    public World world;
+    private World world;
     public Box2DDebugRenderer debugRenderer;
 
 
@@ -61,4 +61,5 @@ public class Box2D_Simulator {
     public float getSimulatedTime(){
         return simulatedTime;
     }
+    public World getWorld(){ return world;}
 }
