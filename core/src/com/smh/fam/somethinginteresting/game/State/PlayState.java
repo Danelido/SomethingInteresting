@@ -30,6 +30,8 @@ public class PlayState extends GameState {
     private InputProcessor inputProcessor;
 
     private Vector2 camera_firstTouch = new Vector2(); // belonds to camera movement code, might be temporary
+    private Vector2 camera_momentum = new Vector2(0.0f, 0.0f);
+    private float camera_momentumDecay = 0.001f;
 
     protected PlayState(GameStateManager gsm) {
         super(gsm);
@@ -75,12 +77,14 @@ public class PlayState extends GameState {
         float deltaT = Gdx.graphics.getDeltaTime();
         box2D_simulator.simulate(deltaT);
 
+        camera_momentum = camera_momentum.scl((float) Math.pow(camera_momentumDecay, deltaT));
+        camera.translate(camera_momentum.x, camera_momentum.y, 0);
     }
 
     @Override
     public void render(SpriteBatch batch) {
-
         camera.update(); // Recalculate matrices and such
+
         batch.setProjectionMatrix(camera.combined); // Give batch the calculated matrices, has to be done before batch.begin()
         shapeRenderer.setProjectionMatrix(camera.combined);
 
@@ -119,9 +123,8 @@ public class PlayState extends GameState {
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
                 player.fingerTouchedScreen(screenX, screenY, pointer, button);
               if(!player.playerIsTargeted()) {
-                  // TEMPORARY CODE, TESTING CAMERA
-                  camera_firstTouch.x = screenX;
-                  camera_firstTouch.y = screenY;
+                  camera_firstTouch = new Vector2(screenX, screenY);
+                  camera_momentum = new Vector2(0.0f, 0.0f);
               }
                 return false;
             }
@@ -136,7 +139,8 @@ public class PlayState extends GameState {
             public boolean touchDragged(int screenX, int screenY, int pointer) {
                 player.fingerDraggedOnScreen(screenX, screenY, pointer);
                 if(!player.playerIsTargeted()) {
-                    camera.translate(camera_firstTouch.x-screenX, screenY-camera_firstTouch.y, 0);
+                    Vector2 delta = new Vector2(camera_firstTouch.x-screenX, screenY-camera_firstTouch.y);
+                    camera_momentum = camera_momentum.add(delta.scl(0.1f));
                     camera_firstTouch = new Vector2(screenX, screenY);
                 }
                 return false;
