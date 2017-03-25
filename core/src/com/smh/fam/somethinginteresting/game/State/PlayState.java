@@ -60,7 +60,7 @@ public class PlayState extends GameState {
 
         batch.end();
 
-        //box2D_simulator.debugRenderer.render(box2D_simulator.getWorld(), camera.combined);
+        box2D_simulator.debugRenderer.render(box2D_simulator.getWorld(), camera.combined);
 
     }
 
