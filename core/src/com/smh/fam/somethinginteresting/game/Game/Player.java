@@ -1,5 +1,6 @@
 package com.smh.fam.somethinginteresting.game.Game;
 
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -14,7 +15,10 @@ import com.badlogic.gdx.physics.box2d.World;
 
 public class Player {
     private Body simulationBody;
+
+
     public Player(World world, Vector2 position){
+
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(position);
@@ -34,4 +38,12 @@ public class Player {
 
         boxShape.dispose();
     }
+
+
+    private void inputHandler()
+    {
+
+    }
+
+
 }
