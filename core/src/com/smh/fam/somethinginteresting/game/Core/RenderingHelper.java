@@ -9,7 +9,10 @@ import com.badlogic.gdx.math.Vector2;
 public class RenderingHelper {
 
     /**
-     *
+     * Converts world vectors and angle to values which can
+     * be used when calling batch.draw()
+     * return values are in order:
+     * {x-position, y-position, width, height, angle}
      * @return
      */
     public static float[] convertToBatchPlacement(Vector2 position, Vector2 dimensions, float angle){
