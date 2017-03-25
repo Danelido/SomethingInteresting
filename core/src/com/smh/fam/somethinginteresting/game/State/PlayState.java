@@ -44,7 +44,7 @@ public class PlayState extends GameState {
         textureStorage = new TextureStorage();
 
 
-        player = new Player(box2D_simulator.getWorld(), textureStorage, new Vector2(0.f, 0.f));
+        player = new Player(box2D_simulator.getWorld(), textureStorage, new Vector2(0.f, 0.f), camera);
         Obstacle obstacle =  new Obstacle(box2D_simulator.getWorld(), new Vector2(-100.f, -100.f), new Vector2(-120.f, -200.f));
         Obstacle obstacle2 = new Obstacle(box2D_simulator.getWorld(), new Vector2(100, -200.f), new Vector2(-100.f, -210.f));
         Gdx.input.setInputProcessor(inputProcessor); // Registers input from our "inputProcessor" variable
@@ -68,6 +68,11 @@ public class PlayState extends GameState {
         player.render(batch);
         batch.end();
 
+        if(player.playerIsTargeted())
+        {
+            player.displayForceDirection();
+        }
+
         box2D_simulator.debugRenderer.render(box2D_simulator.getWorld(), camera.combined);
     }
 
@@ -89,13 +94,12 @@ public class PlayState extends GameState {
 
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-                // TEMPORARY CODE, TESTING CAMERA
-                //___________________________________________________________
-                camera_firstTouch.x = screenX; camera_firstTouch.y = screenY;
-                //____________________________________________________________
-
                 player.fingerTouchedScreen(screenX, screenY, pointer, button);
-
+              if(!player.playerIsTargeted()) {
+                  // TEMPORARY CODE, TESTING CAMERA
+                  camera_firstTouch.x = screenX;
+                  camera_firstTouch.y = screenY;
+              }
                 return false;
             }
 
@@ -107,22 +111,22 @@ public class PlayState extends GameState {
 
             @Override
             public boolean touchDragged(int screenX, int screenY, int pointer) {
-                // TEMPORARY CODE, TESTING CAMERA
-                //_______________________________________________________________________________________________________
-                float camera_speed = 10;
-                float x_camera_direction = 0;
-                float y_camera_direction = 0;
-
-                if(camera_firstTouch.x < screenX) x_camera_direction = -1; else x_camera_direction = 1;
-                if(camera_firstTouch.y < screenY) y_camera_direction = 1; else y_camera_direction = -1;
-
-                camera_firstTouch.x = screenX;
-                camera_firstTouch.y = screenY;
-                camera.translate(x_camera_direction * camera_speed, y_camera_direction * camera_speed,0);
-               // _______________________________________________________________________________________________________
-
                 player.fingerDraggedOnScreen(screenX, screenY, pointer);
+                if(!player.playerIsTargeted()) {
+                   // TEMPORARY CODE, TESTING CAMERA
+                   float camera_speed = 10;
+                   float x_camera_direction = 0;
+                   float y_camera_direction = 0;
 
+                   if (camera_firstTouch.x < screenX) x_camera_direction = -1;
+                   else x_camera_direction = 1;
+                   if (camera_firstTouch.y < screenY) y_camera_direction = 1;
+                   else y_camera_direction = -1;
+
+                   camera_firstTouch.x = screenX;
+                   camera_firstTouch.y = screenY;
+                   camera.translate(x_camera_direction * camera_speed, y_camera_direction * camera_speed, 0);
+               }
                 return false;
             }
 
@@ -136,8 +140,13 @@ public class PlayState extends GameState {
                 return false;
             }
         };
+        
+    }
 
-
+    @Override
+    public void dispose()
+    {
+        player.dispose();
     }
 
 }

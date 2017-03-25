@@ -30,6 +30,8 @@ public class GdxGameCore extends ApplicationAdapter {
 
 	@Override
 	public void dispose () {
+
 		batch.dispose();
+		gsm.dispose();
 	}
 }

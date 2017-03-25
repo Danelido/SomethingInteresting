@@ -31,4 +31,10 @@ public class GameStateManager {
                 Gamestates.peek().render(batch);
         }
 
+        public void dispose()
+        {
+            if(!Gamestates.empty())
+                Gamestates.peek().dispose();
+        }
+
 }

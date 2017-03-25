@@ -1,8 +1,10 @@
 package com.smh.fam.somethinginteresting.game.Game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -24,13 +26,23 @@ import static com.smh.fam.somethinginteresting.game.Core.RenderingHelper.convert
  */
 
 public class Player {
+
+    private World world;
     private Body simulationBody;
     private Texture texture;
+    private Camera camera;
 
     private final float WIDTH = 30f; // Box2D coordinates
     private final float HEIGHT = 30f;
 
-    public Player(World world, TextureStorage textureStorage, Vector2 position){
+    private Vector2 force_whereToApplyForceToPlayer = new Vector2(0,0); // Always going to be in the center, atleast for now. Initialized to 0,0 instead of null
+    private Vector2 force_currentFingerPositionOnScreen = new Vector2(0,0);
+    private boolean playerTargetedByFinger = false;
+    private ShapeRenderer shapeRenderer = new ShapeRenderer();
+
+    public Player(World world, TextureStorage textureStorage, Vector2 position, Camera camera){
+        this.world = world;
+        this.camera = camera;
         try {
             texture = textureStorage.getTexture("player.png");
         } catch (FileNotFoundException e) {
@@ -72,25 +84,118 @@ public class Player {
                 texture.getWidth(), texture.getHeight(),
                 false, false );
     }
+    // Display which direction you're applying the force
+    public void displayForceDirection()
+    {
+        force_whereToApplyForceToPlayer.set(simulationBody.getPosition().x, simulationBody.getPosition().y); // to keep the line centered on player at all times
+        shapeRenderer.setColor(com.badlogic.gdx.graphics.Color.WHITE);
+        Gdx.gl.glLineWidth(5.0f);
+        shapeRenderer.setProjectionMatrix(camera.combined);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.line(force_whereToApplyForceToPlayer.x ,
+                            force_whereToApplyForceToPlayer.y,
+                                force_currentFingerPositionOnScreen.x ,
+                                    force_currentFingerPositionOnScreen.y);
+        shapeRenderer.end();
+        Gdx.gl.glLineWidth(1.0f);
+    }
+
+    // NOTE: Right now it is being applied to the center of the player.
+    // With that being said force_on_player_location is ALWAYS equal to player center
+    // Apply force to player
+    private void applyForceToPlayer(Vector2 force_on_player_location, Vector2 fingerReleased)
+    {
+        Vector2 direction = new Vector2();
+        float x = force_on_player_location.x - fingerReleased.x;
+        float y =  force_on_player_location.y - fingerReleased.y;
+
+        double c = Math.sqrt( (x * x) + (y * y) );
+        direction.x = (float)(x / c) * CoreValues_Static.FORCE_MULTIPLYER_CONSTANT;
+        direction.y =  (float)(y / c) * CoreValues_Static.FORCE_MULTIPLYER_CONSTANT;
+        simulationBody.applyLinearImpulse(direction.x, direction.y, force_on_player_location.x, force_on_player_location.y,true);
+    }
 
 
     public void fingerTouchedScreen(int screenX, int screenY, int pointer, int button)
     {
-        // Transform screen coord to game coord
-        int xRelativeToGame =  (int)(((float)screenX / (float)(Gdx.graphics.getWidth()) ) * CoreValues_Static.VIRTUAL_WIDTH);
-        int yRelativeToGame =  (int)(((float)screenY / (float)(Gdx.graphics.getHeight()) ) * CoreValues_Static.VIRTUAL_HEIGHT);
-        Gdx.app.log("TouchEvent","GameX: " + xRelativeToGame + " GameY: " + yRelativeToGame );
+        Vector2 point = convertToGameCoords(screenX, screenY);
+        point = convertFromGameCoordsToBox2DCoords(point);
+
+            // If finger is on the box
+             if(point.x + camera.position.x >= simulationBody.getPosition().x - WIDTH
+                &&
+                    point.x + camera.position.x <= simulationBody.getPosition().x + WIDTH
+                    &&
+                        point.y + camera.position.y >= simulationBody.getPosition().y - HEIGHT
+                        &&
+                            point.y + camera.position.y <= simulationBody.getPosition().y + HEIGHT)
+             {
+                 force_whereToApplyForceToPlayer.set(simulationBody.getPosition().x, simulationBody.getPosition().y);
+                 force_currentFingerPositionOnScreen.set(point.x + camera.position.x, point.y + camera.position.y);
+                 playerTargetedByFinger = true;
+            }
     }
 
 
     public void fingerReleasedFromScreen(int screenX, int screenY, int pointer, int button)
     {
-        //Gdx.app.log("TouchEvent", "Finger released at X: " + screenX + " Y: " + screenY);
+        // Only call this if the box is being targeted by the finger
+        if(playerTargetedByFinger) {
+        playerTargetedByFinger = false;
+        applyForceToPlayer(force_whereToApplyForceToPlayer, force_currentFingerPositionOnScreen);
+        }
+
     }
 
     public void fingerDraggedOnScreen(int screenX, int screenY, int pointer)
     {
-        //Gdx.app.log("DragEvent", "Finger at position X: " + screenX + " Y: " + screenY);
+        // Create a vector and convert it then use those coords to render the "force line" correctly
+        Vector2 point = convertToGameCoords(screenX, screenY);
+        point = convertFromGameCoordsToBox2DCoords(point);
+        force_currentFingerPositionOnScreen.set(point.x + camera.position.x, point.y + camera.position.y);
     }
+
+
+    // Convert regular screen coords to game relative coords
+    private Vector2 convertToGameCoords(int x, int y)
+    {
+        int gx = (int)(((float)x / (float)(Gdx.graphics.getWidth()) ) * CoreValues_Static.VIRTUAL_WIDTH);
+        int gy = (int)(((float)y / (float)(Gdx.graphics.getHeight()) ) * CoreValues_Static.VIRTUAL_HEIGHT);
+
+        return new Vector2(gx,gy);
+    }
+
+    private Vector2 convertToGameCoords(float x, float y)
+    {
+        float gx = ((x / (float)(Gdx.graphics.getWidth()) ) * CoreValues_Static.VIRTUAL_WIDTH);
+        float gy = ((y / (float)(Gdx.graphics.getHeight()) ) * CoreValues_Static.VIRTUAL_HEIGHT);
+
+        return new Vector2(gx,gy);
+    }
+
+    private Vector2 convertToGameCoords(Vector2 xy)
+    {
+        Vector2 temp = new Vector2();
+        temp.x = ((xy.x / (float)(Gdx.graphics.getWidth()) ) * CoreValues_Static.VIRTUAL_WIDTH);
+        temp.y = ((xy.y / (float)(Gdx.graphics.getHeight()) ) * CoreValues_Static.VIRTUAL_HEIGHT);
+
+        return temp;
+    }
+
+    // Translate relative game coord to box2d coord system
+    private Vector2 convertFromGameCoordsToBox2DCoords(Vector2 xy)
+    {
+        Vector2 temp = new Vector2();
+        temp.x = xy.x - (CoreValues_Static.VIRTUAL_WIDTH/2);
+        temp.y = (CoreValues_Static.VIRTUAL_HEIGHT/2) - xy.y; // because of flipped y-axis
+        return temp;
+    }
+
+    public void dispose()
+    {
+        shapeRenderer.dispose();
+    }
+
+    public boolean playerIsTargeted() {return playerTargetedByFinger;}
 
 }
