@@ -29,7 +29,8 @@ public class PlayState extends GameState {
 
     @Override
     public void update() {
-        box2D_simulator.simulate(0.01f);
+        float deltaT = Gdx.graphics.getDeltaTime();
+        box2D_simulator.simulate(deltaT);
     }
 
     @Override
