@@ -19,7 +19,7 @@ public class RenderingHelper {
         float[] returnValue = new float[5];
         returnValue[0] = position.x-dimensions.x; returnValue[1] = position.y-dimensions.y;
         returnValue[2] = dimensions.x*2f; returnValue[3] = dimensions.y*2f;
-        returnValue[4] = angle*180f/(float) Math.PI; // Convert from degrees to rads
+        returnValue[4] = (float) Math.toDegrees(angle);
         return returnValue;
     };
 }
