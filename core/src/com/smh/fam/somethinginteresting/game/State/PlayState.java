@@ -6,6 +6,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.smh.fam.somethinginteresting.game.Core.Box2D_Simulator;
@@ -25,6 +26,7 @@ public class PlayState extends GameState {
 
     private Box2D_Simulator box2D_simulator;
     private TextureStorage textureStorage;
+    private ShapeRenderer shapeRenderer;
     private InputProcessor inputProcessor;
 
     private Vector2 camera_firstTouch = new Vector2(); // belonds to camera movement code, might be temporary
@@ -42,11 +44,19 @@ public class PlayState extends GameState {
         camera = new OrthographicCamera(CoreValues_Static.VIRTUAL_WIDTH, CoreValues_Static.VIRTUAL_HEIGHT);
         box2D_simulator = new Box2D_Simulator();
         textureStorage = new TextureStorage();
+        shapeRenderer = new ShapeRenderer();
+
+        obstacles = new Array<Obstacle>();
+
 
 
         player = new Player(box2D_simulator.getWorld(), textureStorage, new Vector2(0.f, 0.f), camera);
-        Obstacle obstacle =  new Obstacle(box2D_simulator.getWorld(), new Vector2(-100.f, -100.f), new Vector2(-120.f, -200.f));
-        Obstacle obstacle2 = new Obstacle(box2D_simulator.getWorld(), new Vector2(100, -200.f), new Vector2(-100.f, -210.f));
+        Obstacle obstacle =  new Obstacle(box2D_simulator.getWorld(), new Vector2(-100.f, -100.f), new Vector2(-120.f, -200.f), 45f);
+        Obstacle obstacle2 = new Obstacle(box2D_simulator.getWorld(), new Vector2(100, -200.f), new Vector2(-100.f, -210.f), 2f);
+
+        obstacles.add(obstacle);
+        obstacles.add(obstacle2);
+
         Gdx.input.setInputProcessor(inputProcessor); // Registers input from our "inputProcessor" variable
 
     }
@@ -62,16 +72,27 @@ public class PlayState extends GameState {
     public void render(SpriteBatch batch) {
 
         camera.update(); // Recalculate matrices and such
-        batch.setProjectionMatrix(camera.combined); // Give batch the calculated matrices
+        batch.setProjectionMatrix(camera.combined); // Give batch the calculated matrices, has to be done before batch.begin()
+        shapeRenderer.setProjectionMatrix(camera.combined);
 
         batch.begin();
-        player.render(batch);
+
+        player.render(batch); // Render player
+
         batch.end();
+
 
         if(player.playerIsTargeted())
         {
             player.displayForceDirection();
         }
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        for (Obstacle obstacle: obstacles){
+            obstacle.render(batch, shapeRenderer);
+        }
+        shapeRenderer.end();
+
 
         box2D_simulator.debugRenderer.render(box2D_simulator.getWorld(), camera.combined);
     }
