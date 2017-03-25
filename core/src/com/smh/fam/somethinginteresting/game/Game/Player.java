@@ -1,10 +1,8 @@
 package com.smh.fam.somethinginteresting.game.Game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -14,7 +12,6 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.smh.fam.somethinginteresting.game.Core.CoreValues_Static;
 
-import java.io.PipedReader;
 
 import static com.smh.fam.somethinginteresting.game.Core.RenderingHelper.convertToBatchPlacement;
 

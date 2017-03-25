@@ -11,6 +11,7 @@ public class CoreValues_Static {
     public static final float VIRTUAL_WIDTH =  (1280);
     public static final float VIRTUAL_HEIGHT = (VIRTUAL_WIDTH / 16 * 9); // 16:9 format
 
+    public static final float GRAVITY_CONSTANT = -9.82f;
 
 
 

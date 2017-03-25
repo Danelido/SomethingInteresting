@@ -9,7 +9,6 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.Array;
 
 /**
  * Created by Axel on 2017-03-24.
@@ -28,7 +27,7 @@ public class Box2D_Simulator {
     public Box2D_Simulator(){
         Box2D.init();
         world = new World(new Vector2(0, 0f), true);
-        setGravity(new Vector2(0f, -9.81f));
+        setGravity(new Vector2(0f, CoreValues_Static.GRAVITY_CONSTANT));
 
         debugRenderer = new Box2DDebugRenderer();
     }

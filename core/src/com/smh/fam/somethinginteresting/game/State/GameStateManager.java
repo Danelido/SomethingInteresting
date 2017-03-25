@@ -11,17 +11,13 @@ import java.util.Stack;
 
 public class GameStateManager {
 
-
     private Stack<GameState> Gamestates;
-
 
         public GameStateManager(GdxGameCore gameCore)
         {
             Gamestates = new Stack<GameState>();
-            Gamestates.push(new PlayState(this));
+            Gamestates.push(new PlayState(this)); // Start playstate when project is started up
         }
-
-
 
         public void update()
         {
@@ -29,14 +25,10 @@ public class GameStateManager {
                 Gamestates.peek().update();
         }
 
-
-
-
         public void render(SpriteBatch batch)
         {
             if(!Gamestates.empty())
                 Gamestates.peek().render(batch);
         }
-
 
 }

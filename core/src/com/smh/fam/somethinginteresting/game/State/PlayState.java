@@ -1,20 +1,15 @@
 package com.smh.fam.somethinginteresting.game.State;
 
 import com.badlogic.gdx.Gdx;
+
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.Array;
 import com.smh.fam.somethinginteresting.game.Core.Box2D_Simulator;
 import com.smh.fam.somethinginteresting.game.Core.CoreValues_Static;
-import com.smh.fam.somethinginteresting.game.Core.GdxGameCore;
 import com.smh.fam.somethinginteresting.game.Game.Obstacle;
 import com.smh.fam.somethinginteresting.game.Game.Player;
 
@@ -30,7 +25,7 @@ public class PlayState extends GameState {
     private Box2D_Simulator box2D_simulator;
     private InputProcessor inputProcessor;
 
-    private Vector2 camera_firstTouch = new Vector2(); // belonds to camera movement code, might be tmeporary
+    private Vector2 camera_firstTouch = new Vector2(); // belonds to camera movement code, might be temporary
 
     protected PlayState(GameStateManager gsm) {
         super(gsm);
@@ -70,7 +65,6 @@ public class PlayState extends GameState {
         player.render(batch);
         batch.end();
 
-
         box2D_simulator.debugRenderer.render(box2D_simulator.getWorld(), camera.combined);
     }
 
@@ -78,9 +72,7 @@ public class PlayState extends GameState {
     {
         inputProcessor = new InputProcessor() {
             @Override
-            public boolean keyDown(int keycode) {
-                return false;
-            }
+            public boolean keyDown(int keycode) {return false;}
 
             @Override
             public boolean keyUp(int keycode) {
@@ -95,9 +87,12 @@ public class PlayState extends GameState {
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
                 // TEMPORARY CODE, TESTING CAMERA
+                //___________________________________________________________
                 camera_firstTouch.x = screenX; camera_firstTouch.y = screenY;
+                //____________________________________________________________
 
                 player.fingerTouchedScreen(screenX, screenY, pointer, button);
+
                 return false;
             }
 
@@ -124,7 +119,6 @@ public class PlayState extends GameState {
                // _______________________________________________________________________________________________________
 
                 player.fingerDraggedOnScreen(screenX, screenY, pointer);
-
 
                 return false;
             }
