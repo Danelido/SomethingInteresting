@@ -37,6 +37,8 @@ public class Player {
         Fixture fixture = simulationBody.createFixture(fixtureDef);
 
         boxShape.dispose();
+
+        simulationBody.setLinearVelocity(new Vector2(-20f, 10f));
     }
 
 

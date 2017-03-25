@@ -33,7 +33,8 @@ public class PlayState extends GameState {
         camera = new OrthographicCamera(GdxGameCore.VIRTUAL_WIDTH, GdxGameCore.VIRTUAL_HEIGHT);
         box2D_simulator = new Box2D_Simulator();
         player = new Player(box2D_simulator.getWorld(), new Vector2(0.f, 0.f));
-        Obstacle obstacle = new Obstacle(box2D_simulator.getWorld(), new Vector2(-50.f, -200.f), new Vector2(50.f,-210.f));
+        Obstacle obstacle =  new Obstacle(box2D_simulator.getWorld(), new Vector2(-100.f, -100.f), new Vector2(-120.f, -200.f));
+        Obstacle obstacle2 = new Obstacle(box2D_simulator.getWorld(), new Vector2(100, -200.f), new Vector2(-100.f, -210.f));
     }
 
     @Override
