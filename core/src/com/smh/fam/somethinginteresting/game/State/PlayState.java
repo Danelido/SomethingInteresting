@@ -57,18 +57,17 @@ public class PlayState extends GameState {
     public void update() {
         float deltaT = Gdx.graphics.getDeltaTime();
         box2D_simulator.simulate(deltaT);
-        camera.update();
+
     }
 
     @Override
     public void render(SpriteBatch batch) {
 
-        camera.update(); // Updates matrices
-        batch.setProjectionMatrix(camera.projection);
+        camera.update(); // Recalculate matrices and such
+        batch.setProjectionMatrix(camera.combined); // Give batch the calculated matrices
+
         batch.begin();
-
         player.render(batch);
-
         batch.end();
 
 
