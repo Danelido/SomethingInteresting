@@ -31,6 +31,7 @@ public class GameStateManager {
 
 
 
+
         public void render(SpriteBatch batch)
         {
             if(!Gamestates.empty())

@@ -40,7 +40,7 @@ public class Box2D_Simulator {
     public void createBox(){
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(100, 300);
+        bodyDef.position.set(100 , 300);
 
         Body body = world.createBody(bodyDef);
 

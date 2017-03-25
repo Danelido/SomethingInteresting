@@ -8,12 +8,9 @@ import com.smh.fam.somethinginteresting.game.Core.Box2D_Simulator;
 import com.smh.fam.somethinginteresting.game.State.GameStateManager;
 
 public class GdxGameCore extends ApplicationAdapter {
-	public static final int VIRTUAL_WIDTH = 1920;
-	public static final int VIRTUAL_HEIGHT = VIRTUAL_WIDTH / 16 * 9; // 16:9 format
 
 	private GameStateManager gsm;
 	private SpriteBatch batch;
-
 
 	@Override
 	public void create () {

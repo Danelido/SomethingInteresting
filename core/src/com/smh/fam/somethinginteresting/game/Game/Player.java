@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.smh.fam.somethinginteresting.game.Core.CoreValues_Static;
 
 /**
  * Created by Axel on 2017-03-25.
@@ -45,18 +46,21 @@ public class Player {
 
     public void fingerTouchedScreen(int screenX, int screenY, int pointer, int button)
     {
-        Gdx.app.log("TouchEvent", "Finger touched at X: " + screenX + " Y: " + screenY);
+        // Transform screen coord to game coord
+        int xRelativeToGame =  (int)(((float)screenX / (float)(Gdx.graphics.getWidth()) ) * CoreValues_Static.VIRTUAL_WIDTH);
+        int yRelativeToGame =  (int)(((float)screenY / (float)(Gdx.graphics.getHeight()) ) * CoreValues_Static.VIRTUAL_HEIGHT);
+        Gdx.app.log("TouchEvent","GameX: " + xRelativeToGame + " GameY: " + yRelativeToGame );
     }
 
 
     public void fingerReleasedFromScreen(int screenX, int screenY, int pointer, int button)
     {
-        Gdx.app.log("TouchEvent", "Finger released at X: " + screenX + " Y: " + screenY);
+        //Gdx.app.log("TouchEvent", "Finger released at X: " + screenX + " Y: " + screenY);
     }
 
     public void fingerDraggedOnScreen(int screenX, int screenY, int pointer)
     {
-        Gdx.app.log("DragEvent", "Finger at position X: " + screenX + " Y: " + screenY);
+        //Gdx.app.log("DragEvent", "Finger at position X: " + screenX + " Y: " + screenY);
     }
 
 }
