@@ -36,7 +36,7 @@ public class PlayState extends GameState {
     }
 
     private Player player;
-    Array<Obstacle> obstacles;
+    private Array<Obstacle> obstacles;
 
     @Override
     public void init() {
@@ -48,14 +48,23 @@ public class PlayState extends GameState {
 
         obstacles = new Array<Obstacle>();
 
-
-
         player = new Player(box2D_simulator.getWorld(), textureStorage, new Vector2(0.f, 0.f), camera);
         Obstacle obstacle =  new Obstacle(box2D_simulator.getWorld(), new Vector2(-100.f, -100.f), new Vector2(-120.f, -200.f), 45f);
         Obstacle obstacle2 = new Obstacle(box2D_simulator.getWorld(), new Vector2(100, -200.f), new Vector2(-100.f, -210.f), 2f);
 
         obstacles.add(obstacle);
         obstacles.add(obstacle2);
+
+        //Temporary walls around game area.
+        Obstacle wall_upper =  new Obstacle(box2D_simulator.getWorld(), new Vector2(0, (CoreValues_Static.VIRTUAL_HEIGHT/2) - 10), new Vector2(CoreValues_Static.VIRTUAL_WIDTH/2, (CoreValues_Static.VIRTUAL_HEIGHT / 2) - 20 ), 0f);
+        Obstacle wall_bottom =  new Obstacle(box2D_simulator.getWorld(), new Vector2(0, (-CoreValues_Static.VIRTUAL_HEIGHT/2) + 10), new Vector2(CoreValues_Static.VIRTUAL_WIDTH/2, (-CoreValues_Static.VIRTUAL_HEIGHT / 2) + 20 ), 0f);
+        Obstacle wall_left =  new Obstacle(box2D_simulator.getWorld(), new Vector2(-CoreValues_Static.VIRTUAL_WIDTH/2, 0), new Vector2((-CoreValues_Static.VIRTUAL_WIDTH/2) + 20, (CoreValues_Static.VIRTUAL_HEIGHT / 2) ), 0f);
+        Obstacle wall_right =  new Obstacle(box2D_simulator.getWorld(), new Vector2(CoreValues_Static.VIRTUAL_WIDTH/2, 0), new Vector2((CoreValues_Static.VIRTUAL_WIDTH/2) + 20, (CoreValues_Static.VIRTUAL_HEIGHT / 2) ), 0f);
+
+        obstacles.add(wall_upper);
+        obstacles.add(wall_bottom);
+        obstacles.add(wall_left);
+        obstacles.add(wall_right);
 
         Gdx.input.setInputProcessor(inputProcessor); // Registers input from our "inputProcessor" variable
 

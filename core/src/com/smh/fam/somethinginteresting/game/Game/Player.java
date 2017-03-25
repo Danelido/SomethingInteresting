@@ -110,8 +110,8 @@ public class Player {
         float y =  force_on_player_location.y - fingerReleased.y;
 
         double c = Math.sqrt( (x * x) + (y * y) );
-        direction.x = (float)(x / c) * CoreValues_Static.FORCE_MULTIPLYER_CONSTANT;
-        direction.y =  (float)(y / c) * CoreValues_Static.FORCE_MULTIPLYER_CONSTANT;
+        direction.x = (float)(x / c) * CoreValues_Static.FORCE_MULTIPLYER_CONSTANT * 10000;
+        direction.y =  (float)(y / c) * CoreValues_Static.FORCE_MULTIPLYER_CONSTANT * 10000;
         simulationBody.applyLinearImpulse(direction.x, direction.y, force_on_player_location.x, force_on_player_location.y,true);
     }
 
