@@ -85,16 +85,8 @@ public class PlayState extends GameState {
         shapeRenderer.setProjectionMatrix(camera.combined);
 
         batch.begin();
-
         player.render(batch); // Render player
-
         batch.end();
-
-
-        if(player.playerIsTargeted())
-        {
-            player.displayForceDirection();
-        }
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         for (Obstacle obstacle: obstacles){
@@ -102,7 +94,8 @@ public class PlayState extends GameState {
         }
         shapeRenderer.end();
 
-
+        if(player.playerIsTargeted()) {player.displayForceDirection();}
+        
         box2D_simulator.debugRenderer.render(box2D_simulator.getWorld(), camera.combined);
     }
 
@@ -177,6 +170,7 @@ public class PlayState extends GameState {
     public void dispose()
     {
         player.dispose();
+        shapeRenderer.dispose();
     }
 
 }
