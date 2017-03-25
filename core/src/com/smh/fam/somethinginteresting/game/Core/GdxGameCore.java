@@ -28,9 +28,8 @@ public class GdxGameCore extends ApplicationAdapter {
 
 		gsm.update();
 
-		batch.begin();
+
 		gsm.render(batch);
-		batch.end();
 
 	}
 
