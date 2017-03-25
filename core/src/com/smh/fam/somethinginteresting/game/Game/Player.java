@@ -15,6 +15,8 @@ import com.badlogic.gdx.physics.box2d.World;
 
 import java.io.PipedReader;
 
+import static com.smh.fam.somethinginteresting.game.Core.RenderingHelper.convertToBatchPlacement;
+
 /**
  * Created by Axel on 2017-03-25.
  */
@@ -52,12 +54,14 @@ public class Player {
     }
 
     public void render(Batch batch){
+        float[] batchPlacement = convertToBatchPlacement(simulationBody.getPosition(), new Vector2(WIDTH, HEIGHT), simulationBody.getAngle());
+
         batch.draw(texture,
-                simulationBody.getPosition().x-WIDTH, simulationBody.getPosition().y-HEIGHT,
-                simulationBody.getPosition().x, simulationBody.getPosition().y,
-                WIDTH*2f, HEIGHT*2f,
+                batchPlacement[0], batchPlacement[1],
+                batchPlacement[2]/2f, batchPlacement[3]/2f,
+                batchPlacement[2], batchPlacement[3],
                 1.0f, 1.0f,
-                simulationBody.getAngle() * 180f/(float) Math.PI,
+                batchPlacement[4],
                 0, 0,
                 texture.getWidth(), texture.getHeight(),
                 false, false );
