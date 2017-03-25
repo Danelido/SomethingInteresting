@@ -13,6 +13,8 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
+import java.io.PipedReader;
+
 /**
  * Created by Axel on 2017-03-25.
  */
@@ -51,11 +53,11 @@ public class Player {
 
     public void render(Batch batch){
         batch.draw(texture,
+                simulationBody.getPosition().x-WIDTH, simulationBody.getPosition().y-HEIGHT,
                 simulationBody.getPosition().x, simulationBody.getPosition().y,
-                simulationBody.getPosition().x, simulationBody.getPosition().y,
-                WIDTH, HEIGHT,
+                WIDTH*2f, HEIGHT*2f,
                 1.0f, 1.0f,
-                simulationBody.getAngle(),
+                simulationBody.getAngle() * 180f/(float) Math.PI,
                 0, 0,
                 texture.getWidth(), texture.getHeight(),
                 false, false );
