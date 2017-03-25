@@ -1,5 +1,6 @@
 package com.smh.fam.somethinginteresting.game.Game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -42,10 +43,20 @@ public class Player {
     }
 
 
-    private void inputHandler()
+    public void fingerTouchedScreen(int screenX, int screenY, int pointer, int button)
     {
-
+        Gdx.app.log("TouchEvent", "Finger touched at X: " + screenX + " Y: " + screenY);
     }
 
+
+    public void fingerReleasedFromScreen(int screenX, int screenY, int pointer, int button)
+    {
+        Gdx.app.log("TouchEvent", "Finger released at X: " + screenX + " Y: " + screenY);
+    }
+
+    public void fingerDraggedOnScreen(int screenX, int screenY, int pointer)
+    {
+        Gdx.app.log("DragEvent", "Finger at position X: " + screenX + " Y: " + screenY);
+    }
 
 }

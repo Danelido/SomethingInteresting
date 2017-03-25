@@ -73,18 +73,19 @@ public class PlayState extends GameState {
 
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-                Gdx.app.log("TouchEvent" , " Finger touching screen");
+                player.fingerTouchedScreen(screenX, screenY, pointer, button);
                 return false;
             }
 
             @Override
             public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-                Gdx.app.log("TouchEvent" , "Finger released from screen");
+                player.fingerReleasedFromScreen(screenX, screenY, pointer, button);
                 return false;
             }
 
             @Override
             public boolean touchDragged(int screenX, int screenY, int pointer) {
+                player.fingerDraggedOnScreen(screenX, screenY, pointer);
                 return false;
             }
 
