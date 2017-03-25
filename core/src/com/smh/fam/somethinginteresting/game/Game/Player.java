@@ -2,6 +2,9 @@ package com.smh.fam.somethinginteresting.game.Game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -11,15 +14,23 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.smh.fam.somethinginteresting.game.Core.CoreValues_Static;
 
+import java.io.PipedReader;
+
+import static com.smh.fam.somethinginteresting.game.Core.RenderingHelper.convertToBatchPlacement;
+
 /**
  * Created by Axel on 2017-03-25.
  */
 
 public class Player {
     private Body simulationBody;
+    private Texture texture;
 
+    private final float WIDTH = 30f; // Box2D coordinates
+    private final float HEIGHT = 30f;
 
     public Player(World world, Vector2 position){
+        texture = new Texture(Gdx.files.internal("player.png"));
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -28,7 +39,7 @@ public class Player {
         simulationBody = world.createBody(bodyDef);
 
         PolygonShape boxShape = new PolygonShape();
-        boxShape.setAsBox(30.0f, 30.0f);
+        boxShape.setAsBox(WIDTH, HEIGHT);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = boxShape;
@@ -41,6 +52,20 @@ public class Player {
         boxShape.dispose();
 
         simulationBody.setLinearVelocity(new Vector2(-20f, 10f));
+    }
+
+    public void render(Batch batch){
+        float[] batchPlacement = convertToBatchPlacement(simulationBody.getPosition(), new Vector2(WIDTH, HEIGHT), simulationBody.getAngle());
+
+        batch.draw(texture,
+                batchPlacement[0], batchPlacement[1],
+                batchPlacement[2]/2f, batchPlacement[3]/2f,
+                batchPlacement[2], batchPlacement[3],
+                1.0f, 1.0f,
+                batchPlacement[4],
+                0, 0,
+                texture.getWidth(), texture.getHeight(),
+                false, false );
     }
 
 

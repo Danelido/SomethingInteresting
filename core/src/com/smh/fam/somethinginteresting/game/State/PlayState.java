@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.Array;
 import com.smh.fam.somethinginteresting.game.Core.Box2D_Simulator;
 import com.smh.fam.somethinginteresting.game.Core.CoreValues_Static;
 import com.smh.fam.somethinginteresting.game.Core.GdxGameCore;
@@ -27,7 +28,6 @@ public class PlayState extends GameState {
     private Camera camera;
 
     private Box2D_Simulator box2D_simulator;
-    private Player player;
     private InputProcessor inputProcessor;
 
     private Vector2 camera_firstTouch = new Vector2(); // belonds to camera movement code, might be tmeporary
@@ -36,11 +36,16 @@ public class PlayState extends GameState {
         super(gsm);
     }
 
+    private Player player;
+    Array<Obstacle> obstacles;
+
     @Override
     public void init() {
         inputHandler();
         camera = new OrthographicCamera(CoreValues_Static.VIRTUAL_WIDTH, CoreValues_Static.VIRTUAL_HEIGHT);
         box2D_simulator = new Box2D_Simulator();
+
+
         player = new Player(box2D_simulator.getWorld(), new Vector2(0.f, 0.f));
         Obstacle obstacle =  new Obstacle(box2D_simulator.getWorld(), new Vector2(-100.f, -100.f), new Vector2(-120.f, -200.f));
         Obstacle obstacle2 = new Obstacle(box2D_simulator.getWorld(), new Vector2(100, -200.f), new Vector2(-100.f, -210.f));
@@ -57,6 +62,16 @@ public class PlayState extends GameState {
 
     @Override
     public void render(SpriteBatch batch) {
+
+        camera.update(); // Updates matrices
+        batch.setProjectionMatrix(camera.projection);
+        batch.begin();
+
+        player.render(batch);
+
+        batch.end();
+
+
         box2D_simulator.debugRenderer.render(box2D_simulator.getWorld(), camera.combined);
     }
 

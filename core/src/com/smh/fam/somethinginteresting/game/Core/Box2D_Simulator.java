@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.Array;
 
 public class Box2D_Simulator {
     private float simulatedTime = 0.0f;
+    private final float timeScale = 1.0f;
     private World world;
     public Box2DDebugRenderer debugRenderer;
 
@@ -26,11 +27,14 @@ public class Box2D_Simulator {
 
     public Box2D_Simulator(){
         Box2D.init();
-        world = new World(new Vector2(0, -10), true);
+        world = new World(new Vector2(0, 0f), true);
+        setGravity(new Vector2(0f, -9.81f));
+
         debugRenderer = new Box2DDebugRenderer();
     }
 
     public void simulate(float deltaT){
+        deltaT *= timeScale;
         deltaT = Math.min(deltaT, 0.25f); // To avoid stepping too far on slow devices
         simulatedTime += deltaT;
 
@@ -56,6 +60,13 @@ public class Box2D_Simulator {
         Fixture fixture = body.createFixture(fixtureDef);
 
         boxShape.dispose();
+    }
+
+    public void setGravity(Vector2 gravity){
+        world.setGravity(gravity);
+    }
+    public Vector2 getGravity(){
+        return world.getGravity();
     }
 
     public float getSimulatedTime(){
