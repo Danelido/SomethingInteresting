@@ -41,6 +41,9 @@ public class Player {
     private boolean playerTargetedByFinger = false;
     private ShapeRenderer shapeRenderer = new ShapeRenderer();
 
+    // Thickness of the direction line will get thicker when the distance between the box and finger gets larger
+    private float forceDirectionLine_power = 0.f;
+
     public Player(World world, TextureStorage textureStorage, Vector2 position, Camera camera){
         this.world = world;
         this.camera = camera;
@@ -92,16 +95,18 @@ public class Player {
     public void displayForceDirection()
     {
         force_whereToApplyForceToPlayer.set(simulationBody.getPosition().x, simulationBody.getPosition().y); // to keep the line centered on player at all times
-        shapeRenderer.setColor(com.badlogic.gdx.graphics.Color.WHITE);
-        Gdx.gl.glLineWidth(5.0f);
+        shapeRenderer.setColor(com.badlogic.gdx.graphics.Color.ORANGE);
+
+
         shapeRenderer.setProjectionMatrix(camera.combined);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.line(force_whereToApplyForceToPlayer.x ,
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.rectLine(force_whereToApplyForceToPlayer.x ,
                             force_whereToApplyForceToPlayer.y,
                                 force_currentFingerPositionOnScreen.x ,
-                                    force_currentFingerPositionOnScreen.y);
+                                    force_currentFingerPositionOnScreen.y,
+                                        forceDirectionLine_power);
         shapeRenderer.end();
-        Gdx.gl.glLineWidth(1.0f);
+
     }
 
     // NOTE: Right now it is being applied to the center of the player.
@@ -115,8 +120,13 @@ public class Player {
         float y =  force_on_player_location.y - fingerReleased.y;
 
         double c = Math.sqrt( (x * x) + (y * y) );
-        direction.x = (float)(x / c) * CoreValues_Static.FORCE_MULTIPLYER_CONSTANT;
-        direction.y =  (float)(y / c) * CoreValues_Static.FORCE_MULTIPLYER_CONSTANT;
+        direction.x = (float)(x / c);
+        direction.y =  (float)(y / c);
+
+        float force = (float)(c * CoreValues_Static.FORCE_MULTIPLYER_CONSTANT);
+        if(force >= CoreValues_Static.FORCE_MAX) {force = CoreValues_Static.FORCE_MAX;}
+
+        direction.scl(force);
         simulationBody.applyLinearImpulse(direction.x, direction.y, force_on_player_location.x, force_on_player_location.y,true);
     }
 
@@ -136,6 +146,7 @@ public class Player {
              {
                  force_whereToApplyForceToPlayer.set(playerPoint.x, playerPoint.y);
                  force_currentFingerPositionOnScreen.set(point.x/CoreValues_Static.PPM, point.y/CoreValues_Static.PPM);
+                 forceDirectionLine_power = 0.f;
                  playerTargetedByFinger = true;
             }
     }
@@ -145,20 +156,32 @@ public class Player {
     {
         // Only call this if the box is being targeted by the finger
         if(playerTargetedByFinger) {
-        playerTargetedByFinger = false;
-        applyForceToPlayer(force_whereToApplyForceToPlayer, force_currentFingerPositionOnScreen);
+            playerTargetedByFinger = false;
+            forceDirectionLine_power = 0.f;
+            applyForceToPlayer(force_whereToApplyForceToPlayer, force_currentFingerPositionOnScreen);
         }
 
     }
 
     public void fingerDraggedOnScreen(int screenX, int screenY, int pointer)
     {
-        // Create a vector and convert it then use those coords to render the "force line" correctly
-        Vector2 point = CoordinateTransformer.fingerPressedInWorldSpace(screenX, screenY, new Vector2(camera.position.x, camera.position.y));
-        force_currentFingerPositionOnScreen.set((point.x) / CoreValues_Static.PPM, (point.y)/ CoreValues_Static.PPM);
+        if(playerTargetedByFinger) {
+            // Create a vector and convert it then use those coords to render the "force line" correctly
+            Vector2 point = CoordinateTransformer.fingerPressedInWorldSpace(screenX, screenY, new Vector2(camera.position.x, camera.position.y));
+            force_currentFingerPositionOnScreen.set((point.x) / CoreValues_Static.PPM, (point.y) / CoreValues_Static.PPM);
+            Gdx.app.log("ForceLine", "Force: " + forceDirectionLine_power);
+            // Direction line will get thicker when distance between finger and player gets bigger
+            float distance = (force_currentFingerPositionOnScreen.dst(force_whereToApplyForceToPlayer)) * CoreValues_Static.PPM;
+            float power = (distance / CoreValues_Static.PPM) * 0.035f;
+
+            if (power > 0.1f) {
+                forceDirectionLine_power = 0.1f;
+            } else
+                forceDirectionLine_power = power;
+
+        }
+
     }
-
-
 
 
     public void dispose()
