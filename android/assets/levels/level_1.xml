@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <level>
     <player>
-        <pos>-100.0</pos>
-        <pos>0.0</pos>
+        <pos>100.0</pos>
+        <pos>200.0</pos>
     </player>
 
     <obs> <!-- Test obstacle -->

@@ -51,12 +51,12 @@ public class Player {
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(position);
+        bodyDef.position.set(position.x/CoreValues_Static.PPM, position.y/CoreValues_Static.PPM);
 
         simulationBody = world.createBody(bodyDef);
 
         PolygonShape boxShape = new PolygonShape();
-        boxShape.setAsBox(WIDTH, HEIGHT);
+        boxShape.setAsBox(WIDTH / CoreValues_Static.PPM, HEIGHT/ CoreValues_Static.PPM);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = boxShape;
@@ -68,14 +68,15 @@ public class Player {
 
         boxShape.dispose();
 
-        simulationBody.setLinearVelocity(new Vector2(-20f, 10f));
+        //simulationBody.setLinearVelocity(new Vector2(-20f, 10f));
     }
 
     public void render(Batch batch){
         float[] batchPlacement = convertToBatchPlacement(simulationBody.getPosition(), new Vector2(WIDTH, HEIGHT), simulationBody.getAngle());
 
         batch.draw(texture,
-                batchPlacement[0], batchPlacement[1],
+                (((batchPlacement[0] + batchPlacement[2]/2f) * CoreValues_Static.PPM) - CoreValues_Static.VIRTUAL_WIDTH/2)- batchPlacement[2]/2f,       // this have to be simplified somehow... aids
+                (((batchPlacement[1] + batchPlacement[3]/2f) * CoreValues_Static.PPM) - CoreValues_Static.VIRTUAL_HEIGHT/2) -batchPlacement[3]/2f,      // this have to be simplified somehow... aids
                 batchPlacement[2]/2f, batchPlacement[3]/2f,
                 batchPlacement[2], batchPlacement[3],
                 1.0f, 1.0f,
@@ -110,8 +111,8 @@ public class Player {
         float y =  force_on_player_location.y - fingerReleased.y;
 
         double c = Math.sqrt( (x * x) + (y * y) );
-        direction.x = (float)(x / c) * CoreValues_Static.FORCE_MULTIPLYER_CONSTANT * 10000;
-        direction.y =  (float)(y / c) * CoreValues_Static.FORCE_MULTIPLYER_CONSTANT * 10000;
+        direction.x = (float)(x / c) * CoreValues_Static.FORCE_MULTIPLYER_CONSTANT;
+        direction.y =  (float)(y / c) * CoreValues_Static.FORCE_MULTIPLYER_CONSTANT;
         simulationBody.applyLinearImpulse(direction.x, direction.y, force_on_player_location.x, force_on_player_location.y,true);
     }
 
@@ -120,17 +121,18 @@ public class Player {
     {
         Vector2 point = convertToGameCoords(screenX, screenY);
         point = convertFromGameCoordsToBox2DCoords(point);
-
+        Gdx.app.log("textureDebug", "FINGER X: " +  (camera.position.x) + " y: " + point.y+ camera.position.x);
+        Gdx.app.log("textureDebug", "BOX X: " +  simulationBody.getPosition().x* CoreValues_Static.PPM + " y: " + simulationBody.getPosition().y* CoreValues_Static.PPM);
             // If finger is on the box
-             if(point.x + camera.position.x >= simulationBody.getPosition().x - WIDTH
+             if(point.x + camera.position.x >= (simulationBody.getPosition().x* CoreValues_Static.PPM) - WIDTH
                 &&
-                    point.x + camera.position.x <= simulationBody.getPosition().x + WIDTH
+                    point.x + camera.position.x <= (simulationBody.getPosition().x* CoreValues_Static.PPM) + WIDTH
                     &&
-                        point.y + camera.position.y >= simulationBody.getPosition().y - HEIGHT
+                        point.y + camera.position.y >= (simulationBody.getPosition().y* CoreValues_Static.PPM) - HEIGHT
                         &&
-                            point.y + camera.position.y <= simulationBody.getPosition().y + HEIGHT)
+                            point.y + camera.position.y <= (simulationBody.getPosition().y* CoreValues_Static.PPM) + HEIGHT)
              {
-                 force_whereToApplyForceToPlayer.set(simulationBody.getPosition().x, simulationBody.getPosition().y);
+                 force_whereToApplyForceToPlayer.set(simulationBody.getPosition().x* CoreValues_Static.PPM, simulationBody.getPosition().y* CoreValues_Static.PPM);
                  force_currentFingerPositionOnScreen.set(point.x + camera.position.x, point.y + camera.position.y);
                  playerTargetedByFinger = true;
             }
@@ -186,8 +188,8 @@ public class Player {
     private Vector2 convertFromGameCoordsToBox2DCoords(Vector2 xy)
     {
         Vector2 temp = new Vector2();
-        temp.x = xy.x - (CoreValues_Static.VIRTUAL_WIDTH/2);
-        temp.y = (CoreValues_Static.VIRTUAL_HEIGHT/2) - xy.y; // because of flipped y-axis
+        temp.x = xy.x;
+        temp.y = (CoreValues_Static.VIRTUAL_HEIGHT) - xy.y; // because of flipped y-axis
         return temp;
     }
 
