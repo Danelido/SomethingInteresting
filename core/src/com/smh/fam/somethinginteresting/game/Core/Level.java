@@ -2,6 +2,7 @@ package com.smh.fam.somethinginteresting.game.Core;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
@@ -84,6 +85,13 @@ public class Level {
                     }
 
                     obstacles.add(new Obstacle(world, pos1, pos2, angle));
+
+                    // Get color if exists
+                    if (obsNode.getElementsByTagName("color").getLength() != 0) {
+                        String HexColor = obsNode.getElementsByTagName("color").item(0).getTextContent().replace("#","");
+                        Color color = new Color( Integer.parseInt(HexColor, 16) );
+                        obstacles.get(obstacles.size-1).setColor(color);
+                    }
                 }
             }
 
