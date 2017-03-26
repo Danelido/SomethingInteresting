@@ -18,6 +18,8 @@ import com.smh.fam.somethinginteresting.game.Game.Obstacle;
 import com.smh.fam.somethinginteresting.game.Game.Player;
 import com.smh.fam.somethinginteresting.game.Game.Target;
 
+import static com.smh.fam.somethinginteresting.game.Core.CoordinateTransformer.convertFromGameCoordsToBox2DCoords;
+
 
 /**
  * Created by Alexander on 2017-03-24.
@@ -100,11 +102,12 @@ public class PlayState extends GameState {
         box2D_simulator.simulate(deltaT);
         if (ACCELEROMETER_AVAILABLE){
             Vector2 gravityVec = new Vector2(-Gdx.input.getAccelerometerY(), Gdx.input.getAccelerometerX());
-            gravityVec = gravityVec.nor().scl(CoreValues_Static.GRAVITY_CONSTANT);
+            gravityVec = gravityVec.scl(CoreValues_Static.GRAVITY_CONSTANT/10f);
             box2D_simulator.setGravity(gravityVec);
         }
 
         Vector2 summedForce = new Vector2(0,0);
+        Vector2 playerPosition = convertFromGameCoordsToBox2DCoords(player.getPosition());
         for (Target target: targets) {
             target.update(deltaT);
             summedForce = summedForce.add(target.getForce(player.getPosition()));
