@@ -18,8 +18,11 @@ public class CoreValues_Static {
     public static final float VIRTUAL_HEIGHT = (VIRTUAL_WIDTH / 16 * 9); // 16:9 format
 
     public static final float GRAVITY_CONSTANT = -9.82f;
-    public static final float FORCE_MULTIPLYER_CONSTANT = 1.05f;
+    public static final float FORCE_MULTIPLYER_CONSTANT = 4.0f;
     public static final float FORCE_MAX = 3f;
-
+    public static final float MAX_FORCE_DISTANCE = (CoreValues_Static.FORCE_MAX * CoreValues_Static.PPM) / CoreValues_Static.FORCE_MULTIPLYER_CONSTANT;
+    public static final float DIRECTION_LINE_SIZE_FIXED_CONSTANT = 0.05f;
+    public static final float MAX_FORCE_DIRECTION_LINE_POWER = (CoreValues_Static.MAX_FORCE_DISTANCE / CoreValues_Static.PPM) * DIRECTION_LINE_SIZE_FIXED_CONSTANT;
 
 }
+

@@ -2,6 +2,7 @@ package com.smh.fam.somethinginteresting.game.Game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -30,25 +31,35 @@ public class Player {
 
     private World world;
     private Body simulationBody;
-    private Texture texture;
+    private Texture texture, arrowTexture;
     private Camera camera;
     // Player width & height box2d
     private final float WIDTH = 30f;
     private final float HEIGHT = 30f;
+
+    // Direction arrow width & height & angle
+    private float arrow_width = 128f;
+    private float arrow_height = 30f;
+    private double arrow_angle = 0.0f;
+
+    private float arrow_scale_minimum_size = 1f/4f;                 // Minimum size of arrow
+    private float arrow_width_scale = arrow_scale_minimum_size;     // The scale -width
+    private float arrow_height_scale = arrow_scale_minimum_size;    // The scale - height
+    private float forceDirectionLine_power = 0.f;                   // The thickness of the direction sprite will get thicker when the distance between the box and finger gets larger
+
 
     private Vector2 force_whereToApplyForceToPlayer = new Vector2(0,0); // Always going to be in the center, atleast for now. Initialized to 0,0 instead of null
     private Vector2 force_currentFingerPositionOnScreen = new Vector2(0,0);
     private boolean playerTargetedByFinger = false;
     private ShapeRenderer shapeRenderer = new ShapeRenderer();
 
-    // Thickness of the direction line will get thicker when the distance between the box and finger gets larger
-    private float forceDirectionLine_power = 0.f;
 
     public Player(World world, TextureStorage textureStorage, Vector2 position, Camera camera){
         this.world = world;
         this.camera = camera;
         try {
             texture = textureStorage.getTexture("player.png");
+            arrowTexture = textureStorage.getTexture("directionArrow.png");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -73,7 +84,6 @@ public class Player {
 
         boxShape.dispose();
 
-        //simulationBody.setLinearVelocity(new Vector2(-20f, 10f));
     }
 
     public void render(Batch batch){
@@ -92,21 +102,22 @@ public class Player {
                 false, false );
     }
     // Display which direction you're applying the force
-    public void displayForceDirection()
+    public void displayForceDirection(Batch batch)
     {
-        force_whereToApplyForceToPlayer.set(simulationBody.getPosition().x, simulationBody.getPosition().y); // to keep the line centered on player at all times
-        shapeRenderer.setColor(com.badlogic.gdx.graphics.Color.ORANGE);
 
-
-        shapeRenderer.setProjectionMatrix(camera.combined);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.rectLine(force_whereToApplyForceToPlayer.x ,
-                            force_whereToApplyForceToPlayer.y,
-                                force_currentFingerPositionOnScreen.x ,
-                                    force_currentFingerPositionOnScreen.y,
-                                        forceDirectionLine_power);
-        shapeRenderer.end();
-
+        force_whereToApplyForceToPlayer = CoordinateTransformer.ScreenTexturePosition(simulationBody.getPosition(), new Vector2(arrow_width, arrow_height)); // to keep the line centered on player at all times
+        batch.setColor(arrow_width_scale , arrow_scale_minimum_size / arrow_width_scale, 0.0f, 1.0f);
+        batch.draw(arrowTexture,
+                force_whereToApplyForceToPlayer.x - arrow_width* arrow_width_scale,
+                force_whereToApplyForceToPlayer.y - (arrow_height /2f) * arrow_height_scale,
+                arrow_width * arrow_width_scale, (arrow_height /2f) * arrow_height_scale,
+                arrow_width * arrow_width_scale, arrow_height * arrow_width_scale,
+                1.f,1.f,
+                (float)arrow_angle,
+                0,0,
+                arrowTexture.getWidth(), arrowTexture.getHeight(),
+                false,false);
+        batch.setColor(Color.WHITE);
     }
 
     // NOTE: Right now it is being applied to the center of the player.
@@ -116,18 +127,19 @@ public class Player {
     {
         Vector2 direction = new Vector2();
 
-        float x = force_on_player_location.x - fingerReleased.x;
-        float y =  force_on_player_location.y - fingerReleased.y;
+        float x =  (force_on_player_location.x - fingerReleased.x) * CoreValues_Static.PPM;
+        float y =  (force_on_player_location.y - fingerReleased.y) * CoreValues_Static.PPM;
 
         double c = Math.sqrt( (x * x) + (y * y) );
+
         direction.x = (float)(x / c);
         direction.y =  (float)(y / c);
 
-        float force = (float)(c * CoreValues_Static.FORCE_MULTIPLYER_CONSTANT);
-        if(force >= CoreValues_Static.FORCE_MAX) {force = CoreValues_Static.FORCE_MAX;}
+        float force = (float)(c * CoreValues_Static.FORCE_MULTIPLYER_CONSTANT) / CoreValues_Static.PPM;
 
-        direction.scl(force);
-        simulationBody.applyLinearImpulse(direction.x, direction.y, force_on_player_location.x, force_on_player_location.y,true);
+        if(force >= CoreValues_Static.FORCE_MAX) {force = CoreValues_Static.FORCE_MAX;}
+        direction.scl((force));
+        simulationBody.applyLinearImpulse(direction.x, direction.y, simulationBody.getPosition().x, simulationBody.getPosition().y,true);
     }
 
     public void applyForceToPlayer(Vector2 direction) {
@@ -158,25 +170,56 @@ public class Player {
         if(playerTargetedByFinger) {
             playerTargetedByFinger = false;
             forceDirectionLine_power = 0.f;
-            applyForceToPlayer(force_whereToApplyForceToPlayer, force_currentFingerPositionOnScreen);
+            arrow_width_scale = arrow_scale_minimum_size;
+            arrow_height_scale = arrow_scale_minimum_size;
+            applyForceToPlayer(simulationBody.getPosition(),force_currentFingerPositionOnScreen );
         }
 
     }
 
-    public void fingerDraggedOnScreen(int screenX, int screenY, int pointer)
-    {
-        if(playerTargetedByFinger) {
+    public void fingerDraggedOnScreen(int screenX, int screenY, int pointer) {
+        if (playerTargetedByFinger) {
             // Create a vector and convert it then use those coords to render the "force line" correctly
             Vector2 point = CoordinateTransformer.fingerPressedInWorldSpace(screenX, screenY, new Vector2(camera.position.x, camera.position.y));
+            Vector2 playerPoint = CoordinateTransformer.box2DCoordinatesToWorldCoordinates(simulationBody.getPosition());
             force_currentFingerPositionOnScreen.set((point.x) / CoreValues_Static.PPM, (point.y) / CoreValues_Static.PPM);
-            // Direction line will get thicker when distance between finger and player gets bigger
-            float distance = (force_currentFingerPositionOnScreen.dst(force_whereToApplyForceToPlayer)) * CoreValues_Static.PPM;
-            float power = (distance / CoreValues_Static.PPM) * 0.035f;
 
-            if (power > 0.1f) {
-                forceDirectionLine_power = 0.1f;
+            float distance = point.dst(playerPoint);
+
+            arrow_angle = Math.toDegrees(Math.atan2((point.y - playerPoint.y), (point.x - playerPoint.x)));
+
+            // reduce the angle
+            arrow_angle = arrow_angle % 360;
+
+            // force it to be the positive remainder, so that 0 <= angle < 360
+            arrow_angle = (arrow_angle + 360) % 360;
+
+            // force into the minimum absolute value residue class, so that -180 < angle <= 180
+            if (arrow_angle > 180)
+                arrow_angle -= 360;
+
+
+            float currentPower = (distance / CoreValues_Static.PPM) * CoreValues_Static.DIRECTION_LINE_SIZE_FIXED_CONSTANT;
+
+            // At that max force distance there is no need to keep increasing power (thickness/size)
+            if (currentPower >= CoreValues_Static.MAX_FORCE_DIRECTION_LINE_POWER) {
+                forceDirectionLine_power = CoreValues_Static.MAX_FORCE_DIRECTION_LINE_POWER;
+
             } else
-                forceDirectionLine_power = power;
+                forceDirectionLine_power = currentPower;
+
+
+            // Calculate scale
+            arrow_width_scale = (forceDirectionLine_power / CoreValues_Static.MAX_FORCE_DIRECTION_LINE_POWER);
+            if (arrow_width_scale <= arrow_scale_minimum_size) {
+                arrow_width_scale = (arrow_scale_minimum_size);
+            }
+
+            arrow_height_scale = (forceDirectionLine_power / CoreValues_Static.MAX_FORCE_DIRECTION_LINE_POWER);
+            if (arrow_height_scale <= arrow_scale_minimum_size) {
+                arrow_height_scale = arrow_scale_minimum_size;
+            }
+
 
         }
 

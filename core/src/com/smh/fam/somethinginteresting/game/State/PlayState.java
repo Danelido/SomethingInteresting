@@ -108,9 +108,9 @@ public class PlayState extends GameState {
         for (Target target: targets) {
             target.update(deltaT);
             summedForce = summedForce.add(target.getForce(player.getPosition()));
-        }
-        player.applyForceToPlayer(summedForce.scl(deltaT)
-        );
+            }
+             player.applyForceToPlayer(summedForce.scl(deltaT)
+         );
 
         camera_momentum = camera_momentum.scl((float) Math.pow(camera_momentumDecay, deltaT));
         camera.translate(camera_momentum.x, camera_momentum.y, 0);
@@ -131,14 +131,14 @@ public class PlayState extends GameState {
         for (Target target: targets) {
             target.render(batch);
         }
-
+        if(player.playerIsTargeted()) {player.displayForceDirection(batch);}
         batch.end();
 
         for (Obstacle obstacle: obstacles){
             obstacle.render(batch, shapeRenderer);
         }
 
-        if(player.playerIsTargeted()) {player.displayForceDirection();}
+
         
         box2D_simulator.debugRenderer.render(box2D_simulator.getWorld(), box2DCamera.combined);
     }
