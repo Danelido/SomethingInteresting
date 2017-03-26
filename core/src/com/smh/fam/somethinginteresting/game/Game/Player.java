@@ -117,6 +117,9 @@ public class Player {
         simulationBody.applyLinearImpulse(direction.x, direction.y, force_on_player_location.x, force_on_player_location.y,true);
     }
 
+    public void applyForceToPlayer(Vector2 direction) {
+        simulationBody.applyForce(direction.x, direction.y, simulationBody.getPosition().x, simulationBody.getPosition().y, true);
+    }
 
     public void fingerTouchedScreen(int screenX, int screenY, int pointer, int button)
     {
@@ -200,5 +203,8 @@ public class Player {
     }
 
     public boolean playerIsTargeted() {return playerTargetedByFinger;}
+    public Vector2 getPosition(){
+        return simulationBody.getPosition();
+    }
 
 }

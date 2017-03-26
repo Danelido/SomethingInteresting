@@ -103,9 +103,14 @@ public class PlayState extends GameState {
             gravityVec = gravityVec.nor().scl(CoreValues_Static.GRAVITY_CONSTANT);
             box2D_simulator.setGravity(gravityVec);
         }
+
+        Vector2 summedForce = new Vector2(0,0);
         for (Target target: targets) {
             target.update(deltaT);
+            summedForce = summedForce.add(target.getForce(player.getPosition()));
         }
+        player.applyForceToPlayer(summedForce.scl(deltaT)
+        );
 
         camera_momentum = camera_momentum.scl((float) Math.pow(camera_momentumDecay, deltaT));
         camera.translate(camera_momentum.x, camera_momentum.y, 0);

@@ -61,7 +61,7 @@ public class Target {
     }
 
     public void update(float deltaT){
-        angle += ANGLULAR_SPEED*deltaT;
+        angle -= ANGLULAR_SPEED*deltaT;
     }
 
     public void render(Batch batch){
@@ -79,6 +79,13 @@ public class Target {
     }
 
     public Vector2 getForce(Vector2 position){
-        return position.sub(simulationBody.getPosition());
+        Vector2 delta = simulationBody.getPosition().sub(position);
+        float length = delta.len();
+        if (length < radius*4) {
+            return delta.nor().scl(100f/(length+1f)).rotate((float) (20f*Math.max(length*0.5/radius, 1f)));
+        }
+        else {
+            return new Vector2(0, 0);
+        }
     }
 }

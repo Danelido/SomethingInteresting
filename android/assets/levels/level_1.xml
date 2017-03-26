@@ -6,8 +6,8 @@
     </player>
 
     <target>
-        <pos>100.0</pos>
-        <pos>200.0</pos>
+        <pos>400.0</pos>
+        <pos>400.0</pos>
         <radius>75</radius>
     </target>
 
