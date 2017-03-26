@@ -90,7 +90,15 @@ public class Level {
                         angle = Float.parseFloat(obsNode.getElementsByTagName("angle").item(0).getTextContent());
                     }
 
-                    obstacles.add(new Obstacle(world, pos1, pos2, angle));
+                    // Get type if exists
+                    Obstacle.Type type = Obstacle.Type.REGULAR;
+                    if (obsNode.getElementsByTagName("type").getLength() != 0) {
+                        String typeStr = obsNode.getElementsByTagName("type").item(0).getTextContent();
+                        if      (typeStr.equals("REGULAR")) type = Obstacle.Type.REGULAR;
+                        else if (typeStr.equals("BOUNCE"))  type = Obstacle.Type.BOUNCE;
+
+                    }
+                    obstacles.add(new Obstacle(world, pos1, pos2, angle,type));
 
                     // Get color if exists
                     if (obsNode.getElementsByTagName("color").getLength() != 0) {

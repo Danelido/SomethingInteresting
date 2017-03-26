@@ -12,13 +12,22 @@
     </target>
 
     <obs> <!-- Test obstacle -->
-        <pos1>0</pos1>
-        <pos1>0</pos1>
+        <pos1>60</pos1>
+        <pos1>60</pos1>
 
-        <pos2>50</pos2>
-        <pos2>50</pos2>
+        <pos2>70</pos2>
+        <pos2>70</pos2>
 
-        <color>#006699</color>
+        <type>REGULAR</type>
+    </obs>
+    <obs> <!-- Test obstacle -->
+        <pos1>80</pos1>
+        <pos1>80</pos1>
+
+        <pos2>90</pos2>
+        <pos2>90</pos2>
+
+        <type>BOUNCE</type>
     </obs>
 
     <obs> <!-- left wall -->

@@ -83,11 +83,7 @@ public class Target {
     public Vector2 getForce(Vector2 position){
         Vector2 delta = simulationBody.getPosition().sub(position);
         float length = delta.len();
-        if (length < radius*4 && false) {
-            return delta.nor().scl(100f/(length+1f)).rotate((float) (20f*Math.max(length*0.5/radius, 1f)));
-        }
-        else {
-            return new Vector2(0, 0);
-        }
+
+        return delta.nor().scl(Math.max(240-120f*length, 0));
     }
 }

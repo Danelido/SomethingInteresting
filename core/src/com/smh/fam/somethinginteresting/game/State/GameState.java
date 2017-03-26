@@ -21,8 +21,4 @@ public abstract class GameState  {
     public abstract void render(SpriteBatch batch);
     public abstract void dispose();
 
-
-
-
-
 }
