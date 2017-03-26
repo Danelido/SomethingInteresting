@@ -12,9 +12,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
+import java.io.StringReader;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -43,7 +45,7 @@ public class Level {
             DocumentBuilder dBuilder = null;
 
             dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.parse(file.file());
+            Document doc = dBuilder.parse(new InputSource(new StringReader(file.readString())));
             doc.getDocumentElement().normalize();
 
             // Get player-position
