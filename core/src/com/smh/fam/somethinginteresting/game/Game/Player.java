@@ -42,7 +42,7 @@ public class Player {
     private float arrow_height = 30f;
     private double arrow_angle = 0.0f;
 
-    private float arrow_scale_minimum_size = 1f/4f;                 // Minimum size of arrow
+    private float arrow_scale_minimum_size = 1f/3f;                 // Minimum size of arrow
     private float arrow_width_scale = arrow_scale_minimum_size;     // The scale -width
     private float arrow_height_scale = arrow_scale_minimum_size;    // The scale - height
     private float forceDirectionLine_power = 0.f;                   // The thickness of the direction sprite will get thicker when the distance between the box and finger gets larger
@@ -106,7 +106,7 @@ public class Player {
     {
 
         force_whereToApplyForceToPlayer = CoordinateTransformer.ScreenTexturePosition(simulationBody.getPosition(), new Vector2(arrow_width, arrow_height)); // to keep the line centered on player at all times
-        batch.setColor(arrow_width_scale , arrow_scale_minimum_size / arrow_width_scale, 0.0f, 1.0f);
+        batch.setColor(arrow_width_scale , arrow_scale_minimum_size / arrow_width_scale, 0.0f, 0.7f);
         batch.draw(arrowTexture,
                 force_whereToApplyForceToPlayer.x - arrow_width* arrow_width_scale,
                 force_whereToApplyForceToPlayer.y - (arrow_height /2f) * arrow_height_scale,

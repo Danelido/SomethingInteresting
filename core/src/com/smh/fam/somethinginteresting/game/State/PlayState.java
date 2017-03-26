@@ -131,22 +131,27 @@ public class PlayState extends GameState {
         batch.setProjectionMatrix(camera.combined); // Give batch the calculated matrices, has to be done before batch.begin()
         shapeRenderer.setProjectionMatrix(camera.combined);
 
+        // Render obstacles before player
+        // Because the direction sprite needs to be renderer over everything and that includes obstacles
+        // the direction sprite need so be between begin() and end() so this was the only option
+        for (Obstacle obstacle: obstacles){
+            obstacle.render(batch, shapeRenderer);
+        }
+
+
         batch.begin();
 
         for (Target target: targets) {
             target.render(batch);
         }
 
-        if(player.playerIsTargeted()) {player.displayForceDirection(batch);}
-
         player.render(batch); // Render player
 
+        if(player.playerIsTargeted()) {player.displayForceDirection(batch);} // Render direction line above player
 
         batch.end();
 
-        for (Obstacle obstacle: obstacles){
-            obstacle.render(batch, shapeRenderer);
-        }
+
 
 
         
