@@ -52,6 +52,7 @@ public class Player {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(position.x/CoreValues_Static.PPM, position.y/CoreValues_Static.PPM);
+        bodyDef.allowSleep = false;
 
         simulationBody = world.createBody(bodyDef);
 
