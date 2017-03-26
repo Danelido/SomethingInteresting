@@ -5,6 +5,12 @@
         <pos>200.0</pos>
     </player>
 
+    <target>
+        <pos>100.0</pos>
+        <pos>200.0</pos>
+        <radius>75</radius>
+    </target>>
+
     <obs> <!-- Test obstacle -->
         <pos1>0</pos1>
         <pos1>0</pos1>

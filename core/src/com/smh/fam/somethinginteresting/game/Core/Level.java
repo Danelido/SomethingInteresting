@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.smh.fam.somethinginteresting.game.Game.Obstacle;
 import com.smh.fam.somethinginteresting.game.Game.Player;
+import com.smh.fam.somethinginteresting.game.Game.Target;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -29,13 +30,18 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class Level {
     private final World world;
+    private final TextureStorage textureStorage;
+
     private Vector2 playerPosition;
     private Array<Obstacle> obstacles;
+    private Array<Target> targets;
 
-    public Level(World world){
+    public Level(World world, TextureStorage textureStorage){
         this.world = world;
+        this.textureStorage = textureStorage;
 
         obstacles = new Array<Obstacle>();
+        targets = new Array<Target>();
         playerPosition = new Vector2(0f, 0f);
     }
 
@@ -95,6 +101,28 @@ public class Level {
                 }
             }
 
+            // Generate targets
+            {
+                NodeList nList = doc.getElementsByTagName("target");
+                for (int i = 0; i < nList.getLength(); i++){
+                    Element obsNode = (Element) nList.item(i);
+
+                    // Get positions
+                    NodeList position = obsNode.getElementsByTagName("pos");
+                    Vector2 pos = new Vector2();
+                    pos.x = Float.parseFloat(position.item(0).getTextContent());
+                    pos.y = Float.parseFloat(position.item(1).getTextContent());
+
+                    // Get radius if exists
+                    float radius = 50f;
+                    if (obsNode.getElementsByTagName("radius").getLength() != 0) {
+                        radius = Float.parseFloat(obsNode.getElementsByTagName("radius").item(0).getTextContent());
+                    }
+
+                    targets.add(new Target(world, textureStorage, pos, radius));
+                }
+            }
+
 
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
@@ -111,4 +139,5 @@ public class Level {
     public Array<Obstacle> getObstacles(){
         return obstacles;
     }
+    public Array<Target> getTargets() {return targets;}
 }

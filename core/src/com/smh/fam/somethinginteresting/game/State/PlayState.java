@@ -16,6 +16,7 @@ import com.smh.fam.somethinginteresting.game.Core.Level;
 import com.smh.fam.somethinginteresting.game.Core.TextureStorage;
 import com.smh.fam.somethinginteresting.game.Game.Obstacle;
 import com.smh.fam.somethinginteresting.game.Game.Player;
+import com.smh.fam.somethinginteresting.game.Game.Target;
 
 
 /**
@@ -45,6 +46,7 @@ public class PlayState extends GameState {
 
     private Player player;
     private Array<Obstacle> obstacles;
+    private Array<Target> targets;
 
     @Override
     public void init() {
@@ -56,16 +58,19 @@ public class PlayState extends GameState {
         box2DCamera.setToOrtho(false,CoreValues_Static.VIRTUAL_WIDTH/CoreValues_Static.PPM, CoreValues_Static.VIRTUAL_HEIGHT/CoreValues_Static.PPM);
         box2D_simulator = new Box2D_Simulator();
         box2D_simulator.setGravity(new Vector2(0f, CoreValues_Static.GRAVITY_CONSTANT));
-        Level level = new Level(box2D_simulator.getWorld());
-        level.readFromXML("levels/level_1.xml");
 
         textureStorage = new TextureStorage();
         shapeRenderer = new ShapeRenderer();
 
+        Level level = new Level(box2D_simulator.getWorld(), textureStorage);
+        level.readFromXML("levels/level_1.xml");
+
         obstacles = level.getObstacles();
+        targets = level.getTargets();
 
         //player = new Player(box2D_simulator.getWorld(), textureStorage, level.getPlayerPosition(), box2DCamera);
         player = new Player(box2D_simulator.getWorld(), textureStorage, new Vector2(500,600), box2DCamera);
+
         Obstacle obstacle =  new Obstacle(box2D_simulator.getWorld(), new Vector2(500, 100.f), new Vector2(520.f, 200.f), 45f);
         Obstacle obstacle2 = new Obstacle(box2D_simulator.getWorld(), new Vector2(500, 200.f), new Vector2(600.f, 210.f), 2f);
 
@@ -98,6 +103,9 @@ public class PlayState extends GameState {
             gravityVec = gravityVec.nor().scl(CoreValues_Static.GRAVITY_CONSTANT);
             box2D_simulator.setGravity(gravityVec);
         }
+        for (Target target: targets) {
+            target.update(deltaT);
+        }
 
         camera_momentum = camera_momentum.scl((float) Math.pow(camera_momentumDecay, deltaT));
         camera.translate(camera_momentum.x, camera_momentum.y, 0);
@@ -113,7 +121,12 @@ public class PlayState extends GameState {
         shapeRenderer.setProjectionMatrix(camera.combined);
 
         batch.begin();
+
         player.render(batch); // Render player
+        for (Target target: targets) {
+            target.render(batch);
+        }
+
         batch.end();
 
         for (Obstacle obstacle: obstacles){
