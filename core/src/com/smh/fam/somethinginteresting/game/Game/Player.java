@@ -169,7 +169,6 @@ public class Player {
             // Create a vector and convert it then use those coords to render the "force line" correctly
             Vector2 point = CoordinateTransformer.fingerPressedInWorldSpace(screenX, screenY, new Vector2(camera.position.x, camera.position.y));
             force_currentFingerPositionOnScreen.set((point.x) / CoreValues_Static.PPM, (point.y) / CoreValues_Static.PPM);
-            Gdx.app.log("ForceLine", "Force: " + forceDirectionLine_power);
             // Direction line will get thicker when distance between finger and player gets bigger
             float distance = (force_currentFingerPositionOnScreen.dst(force_whereToApplyForceToPlayer)) * CoreValues_Static.PPM;
             float power = (distance / CoreValues_Static.PPM) * 0.035f;
