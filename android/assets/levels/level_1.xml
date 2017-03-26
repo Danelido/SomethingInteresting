@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<level>
+    <player>
+        <pos>-100.0</pos>
+        <pos>0.0</pos>
+    </player>
+
+    <obs> <!-- Test obstacle -->
+        <pos1>0</pos1>
+        <pos1>0</pos1>
+
+        <pos2>50</pos2>
+        <pos2>50</pos2>
+
+        <color>#ff6699</color>
+    </obs>
+
+    <obs> <!-- left wall -->
+        <pos1>-700</pos1>
+        <pos1>-750</pos1>
+
+        <pos2>-620</pos2>
+        <pos2>750</pos2>
+
+        <color>#ff6699</color>
+    </obs>
+
+    <obs> <!-- right wall -->
+        <pos1>700</pos1>
+        <pos1>-750</pos1>
+
+        <pos2>650</pos2>
+        <pos2>750</pos2>
+
+        <color>#ff6699</color>
+    </obs>
+
+</level>

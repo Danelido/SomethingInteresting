@@ -1,5 +1,6 @@
 package com.smh.fam.somethinginteresting.game.Game;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -19,6 +20,7 @@ public class Obstacle {
     private Body simulationBody;
     private float width;
     private float height;
+    private Color color;
 
     public Obstacle(World world, Vector2 position1, Vector2 position2, float angle){
         // Adjusting positions in order to make sure position1 has the smallest coordinates
@@ -41,12 +43,15 @@ public class Obstacle {
         Fixture fixture = simulationBody.createFixture(boxShape,0.0f);
 
         boxShape.dispose();
+
+        color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
     }
 
     public void render(Batch batch, ShapeRenderer shapeRenderer){
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         float[] batchPlacement = convertToBatchPlacement(simulationBody.getPosition(), new Vector2(width, height), simulationBody.getAngle());
 
-        shapeRenderer.setColor(0.0f, 0.3f, 0.8f, 1f);
+        shapeRenderer.setColor(color);
 
         shapeRenderer.rect(
                 batchPlacement[0], batchPlacement[1],
@@ -55,7 +60,10 @@ public class Obstacle {
                 1f, 1f,
                 batchPlacement[4] );
 
+        shapeRenderer.end();
+    }
 
-
+    public void setColor(Color color){
+        this.color = color;
     }
 }

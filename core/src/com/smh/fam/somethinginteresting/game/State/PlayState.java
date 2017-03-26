@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.smh.fam.somethinginteresting.game.Core.Box2D_Simulator;
 import com.smh.fam.somethinginteresting.game.Core.CoreValues_Static;
+import com.smh.fam.somethinginteresting.game.Core.Level;
 import com.smh.fam.somethinginteresting.game.Core.TextureStorage;
 import com.smh.fam.somethinginteresting.game.Game.Obstacle;
 import com.smh.fam.somethinginteresting.game.Game.Player;
@@ -47,15 +48,20 @@ public class PlayState extends GameState {
     @Override
     public void init() {
         inputHandler();
+
+
         camera = new OrthographicCamera(CoreValues_Static.VIRTUAL_WIDTH, CoreValues_Static.VIRTUAL_HEIGHT);
         box2D_simulator = new Box2D_Simulator();
         box2D_simulator.setGravity(new Vector2(0f, CoreValues_Static.GRAVITY_CONSTANT));
+        Level level = new Level(box2D_simulator.getWorld());
+        level.readFromXML("levels/level_1.xml");
+
         textureStorage = new TextureStorage();
         shapeRenderer = new ShapeRenderer();
 
-        obstacles = new Array<Obstacle>();
+        obstacles = level.getObstacles();
 
-        player = new Player(box2D_simulator.getWorld(), textureStorage, new Vector2(0.f, 0.f), camera);
+        player = new Player(box2D_simulator.getWorld(), textureStorage, level.getPlayerPosition(), camera);
         Obstacle obstacle =  new Obstacle(box2D_simulator.getWorld(), new Vector2(-100.f, -100.f), new Vector2(-120.f, -200.f), 45f);
         Obstacle obstacle2 = new Obstacle(box2D_simulator.getWorld(), new Vector2(100, -200.f), new Vector2(-100.f, -210.f), 2f);
 
@@ -63,15 +69,15 @@ public class PlayState extends GameState {
         obstacles.add(obstacle2);
 
         //Temporary walls around game area.
-        Obstacle wall_upper =  new Obstacle(box2D_simulator.getWorld(), new Vector2(0, (CoreValues_Static.VIRTUAL_HEIGHT/2) - 10), new Vector2(CoreValues_Static.VIRTUAL_WIDTH/2, (CoreValues_Static.VIRTUAL_HEIGHT / 2) - 20 ), 0f);
-        Obstacle wall_bottom =  new Obstacle(box2D_simulator.getWorld(), new Vector2(0, (-CoreValues_Static.VIRTUAL_HEIGHT/2) + 10), new Vector2(CoreValues_Static.VIRTUAL_WIDTH/2, (-CoreValues_Static.VIRTUAL_HEIGHT / 2) + 20 ), 0f);
-        Obstacle wall_left =  new Obstacle(box2D_simulator.getWorld(), new Vector2(-CoreValues_Static.VIRTUAL_WIDTH/2, 0), new Vector2((-CoreValues_Static.VIRTUAL_WIDTH/2) + 20, (CoreValues_Static.VIRTUAL_HEIGHT / 2) ), 0f);
-        Obstacle wall_right =  new Obstacle(box2D_simulator.getWorld(), new Vector2(CoreValues_Static.VIRTUAL_WIDTH/2, 0), new Vector2((CoreValues_Static.VIRTUAL_WIDTH/2) + 20, (CoreValues_Static.VIRTUAL_HEIGHT / 2) ), 0f);
+        //Obstacle wall_upper =  new Obstacle(box2D_simulator.getWorld(), new Vector2(0, (CoreValues_Static.VIRTUAL_HEIGHT/2) - 10), new Vector2(CoreValues_Static.VIRTUAL_WIDTH/2, (CoreValues_Static.VIRTUAL_HEIGHT / 2) - 20 ), 0f);
+        //Obstacle wall_bottom =  new Obstacle(box2D_simulator.getWorld(), new Vector2(0, (-CoreValues_Static.VIRTUAL_HEIGHT/2) + 10), new Vector2(CoreValues_Static.VIRTUAL_WIDTH/2, (-CoreValues_Static.VIRTUAL_HEIGHT / 2) + 20 ), 0f);
+        //Obstacle wall_left =  new Obstacle(box2D_simulator.getWorld(), new Vector2(-CoreValues_Static.VIRTUAL_WIDTH/2, 0), new Vector2((-CoreValues_Static.VIRTUAL_WIDTH/2) + 20, (CoreValues_Static.VIRTUAL_HEIGHT / 2) ), 0f);
+        //Obstacle wall_right =  new Obstacle(box2D_simulator.getWorld(), new Vector2(CoreValues_Static.VIRTUAL_WIDTH/2, 0), new Vector2((CoreValues_Static.VIRTUAL_WIDTH/2) + 20, (CoreValues_Static.VIRTUAL_HEIGHT / 2) ), 0f);
 
-        obstacles.add(wall_upper);
+        /*obstacles.add(wall_upper);
         obstacles.add(wall_bottom);
         obstacles.add(wall_left);
-        obstacles.add(wall_right);
+        obstacles.add(wall_right);*/
 
         Gdx.input.setInputProcessor(inputProcessor); // Registers input from our "inputProcessor" variable
 
@@ -104,11 +110,9 @@ public class PlayState extends GameState {
         player.render(batch); // Render player
         batch.end();
 
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         for (Obstacle obstacle: obstacles){
             obstacle.render(batch, shapeRenderer);
         }
-        shapeRenderer.end();
 
         if(player.playerIsTargeted()) {player.displayForceDirection();}
         
