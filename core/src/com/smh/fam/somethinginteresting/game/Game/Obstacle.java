@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.smh.fam.somethinginteresting.game.Core.CoordinateTransformer;
 import com.smh.fam.somethinginteresting.game.Core.CoreValues_Static;
 
 import static com.smh.fam.somethinginteresting.game.Core.RenderingHelper.convertToBatchPlacement;
@@ -30,20 +31,20 @@ public class Obstacle {
         if (position2.x < position1.x) {float tempCoord = position2.x; position2.x = position1.x; position1.x = tempCoord;}
         if (position2.y < position1.y) {float tempCoord = position2.y; position2.y = position1.y; position1.y = tempCoord;}
 
-        width = (position2.x-position1.x)/CoreValues_Static.PPM;
-        height = (position2.y-position1.y)/CoreValues_Static.PPM;
+        width  = position2.x-position1.x;
+        height = position2.y-position1.y;
 
 
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
-        bodyDef.position.set(position1.x / CoreValues_Static.PPM, position1.y/ CoreValues_Static.PPM);
+        bodyDef.position.set(position1.scl(1f/ CoreValues_Static.PPM));
         bodyDef.angle = (float) Math.toRadians(angle);
 
         simulationBody = world.createBody(bodyDef);
 
         PolygonShape boxShape = new PolygonShape();
-        boxShape.setAsBox(width, height);
+        boxShape.setAsBox(width/ CoreValues_Static.PPM, height / CoreValues_Static.PPM);
 
         Fixture fixture = simulationBody.createFixture(boxShape,0.0f);
 
@@ -54,7 +55,11 @@ public class Obstacle {
 
     public void render(Batch batch, ShapeRenderer shapeRenderer){
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        float[] batchPlacement = convertToBatchPlacement(simulationBody.getPosition(), new Vector2(width, height), simulationBody.getAngle());
+        float[] batchPlacement = convertToBatchPlacement(
+                CoordinateTransformer.ScreenTexturePosition(simulationBody.getPosition(),
+                        new Vector2(width,height)),
+                            new Vector2(width, height),
+                                simulationBody.getAngle());
 
         shapeRenderer.setColor(color);
 

@@ -12,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.smh.fam.somethinginteresting.game.Core.CoordinateTransformer;
 import com.smh.fam.somethinginteresting.game.Core.CoreValues_Static;
 import com.smh.fam.somethinginteresting.game.Core.TextureStorage;
 
@@ -31,8 +32,8 @@ public class Player {
     private Body simulationBody;
     private Texture texture;
     private Camera camera;
-
-    private final float WIDTH = 30f; // Box2D coordinates
+    // Player width & height box2d
+    private final float WIDTH = 30f;
     private final float HEIGHT = 30f;
 
     private Vector2 force_whereToApplyForceToPlayer = new Vector2(0,0); // Always going to be in the center, atleast for now. Initialized to 0,0 instead of null
@@ -51,7 +52,7 @@ public class Player {
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(position.x/CoreValues_Static.PPM, position.y/CoreValues_Static.PPM);
+        bodyDef.position.set(position.scl(1f/CoreValues_Static.PPM));
         bodyDef.allowSleep = false;
 
         simulationBody = world.createBody(bodyDef);
@@ -73,11 +74,12 @@ public class Player {
     }
 
     public void render(Batch batch){
-        float[] batchPlacement = convertToBatchPlacement(simulationBody.getPosition(), new Vector2(WIDTH, HEIGHT), simulationBody.getAngle());
+        float[] batchPlacement = convertToBatchPlacement(
+                CoordinateTransformer.ScreenTexturePosition(simulationBody.getPosition(),new Vector2(WIDTH,HEIGHT)),
+                new Vector2(WIDTH, HEIGHT), simulationBody.getAngle());
 
         batch.draw(texture,
-                (((batchPlacement[0] + batchPlacement[2]/2f) * CoreValues_Static.PPM) - CoreValues_Static.VIRTUAL_WIDTH/2)- batchPlacement[2]/2f,       // this have to be simplified somehow... aids
-                (((batchPlacement[1] + batchPlacement[3]/2f) * CoreValues_Static.PPM) - CoreValues_Static.VIRTUAL_HEIGHT/2) -batchPlacement[3]/2f,      // this have to be simplified somehow... aids
+                batchPlacement[0], batchPlacement[1],
                 batchPlacement[2]/2f, batchPlacement[3]/2f,
                 batchPlacement[2], batchPlacement[3],
                 1.0f, 1.0f,
@@ -108,6 +110,7 @@ public class Player {
     private void applyForceToPlayer(Vector2 force_on_player_location, Vector2 fingerReleased)
     {
         Vector2 direction = new Vector2();
+
         float x = force_on_player_location.x - fingerReleased.x;
         float y =  force_on_player_location.y - fingerReleased.y;
 
@@ -120,21 +123,16 @@ public class Player {
 
     public void fingerTouchedScreen(int screenX, int screenY, int pointer, int button)
     {
-        Vector2 point = convertToGameCoords(screenX, screenY);
-        point = convertFromGameCoordsToBox2DCoords(point);
-        Gdx.app.log("textureDebug", "FINGER X: " +  (camera.position.x) + " y: " + point.y+ camera.position.x);
-        Gdx.app.log("textureDebug", "BOX X: " +  simulationBody.getPosition().x* CoreValues_Static.PPM + " y: " + simulationBody.getPosition().y* CoreValues_Static.PPM);
+        Vector2 point = CoordinateTransformer.fingerPressedInWorldSpace(screenX, screenY, new Vector2(camera.position.x, camera.position.y));
+        Vector2 playerPoint = CoordinateTransformer.box2DCoordinatesToWorldCoordinates(simulationBody.getPosition());
             // If finger is on the box
-             if(point.x + camera.position.x >= (simulationBody.getPosition().x* CoreValues_Static.PPM) - WIDTH
-                &&
-                    point.x + camera.position.x <= (simulationBody.getPosition().x* CoreValues_Static.PPM) + WIDTH
-                    &&
-                        point.y + camera.position.y >= (simulationBody.getPosition().y* CoreValues_Static.PPM) - HEIGHT
-                        &&
-                            point.y + camera.position.y <= (simulationBody.getPosition().y* CoreValues_Static.PPM) + HEIGHT)
+             if(point.x >= playerPoint.x - WIDTH
+                     && point.x <= playerPoint.x + WIDTH
+                        && point.y  >= playerPoint.y - HEIGHT
+                            && point.y <= playerPoint.y + HEIGHT)
              {
-                 force_whereToApplyForceToPlayer.set(simulationBody.getPosition().x* CoreValues_Static.PPM, simulationBody.getPosition().y* CoreValues_Static.PPM);
-                 force_currentFingerPositionOnScreen.set(point.x + camera.position.x, point.y + camera.position.y);
+                 force_whereToApplyForceToPlayer.set(playerPoint.x, playerPoint.y);
+                 force_currentFingerPositionOnScreen.set(point.x/CoreValues_Static.PPM, point.y/CoreValues_Static.PPM);
                  playerTargetedByFinger = true;
             }
     }
@@ -153,46 +151,12 @@ public class Player {
     public void fingerDraggedOnScreen(int screenX, int screenY, int pointer)
     {
         // Create a vector and convert it then use those coords to render the "force line" correctly
-        Vector2 point = convertToGameCoords(screenX, screenY);
-        point = convertFromGameCoordsToBox2DCoords(point);
-        force_currentFingerPositionOnScreen.set(point.x + camera.position.x, point.y + camera.position.y);
+        Vector2 point = CoordinateTransformer.fingerPressedInWorldSpace(screenX, screenY, new Vector2(camera.position.x, camera.position.y));
+        force_currentFingerPositionOnScreen.set((point.x) / CoreValues_Static.PPM, (point.y)/ CoreValues_Static.PPM);
     }
 
 
-    // Convert regular screen coords to game relative coords
-    private Vector2 convertToGameCoords(int x, int y)
-    {
-        int gx = (int)(((float)x / (float)(Gdx.graphics.getWidth()) ) * CoreValues_Static.VIRTUAL_WIDTH);
-        int gy = (int)(((float)y / (float)(Gdx.graphics.getHeight()) ) * CoreValues_Static.VIRTUAL_HEIGHT);
 
-        return new Vector2(gx,gy);
-    }
-
-    private Vector2 convertToGameCoords(float x, float y)
-    {
-        float gx = ((x / (float)(Gdx.graphics.getWidth()) ) * CoreValues_Static.VIRTUAL_WIDTH);
-        float gy = ((y / (float)(Gdx.graphics.getHeight()) ) * CoreValues_Static.VIRTUAL_HEIGHT);
-
-        return new Vector2(gx,gy);
-    }
-
-    private Vector2 convertToGameCoords(Vector2 xy)
-    {
-        Vector2 temp = new Vector2();
-        temp.x = ((xy.x / (float)(Gdx.graphics.getWidth()) ) * CoreValues_Static.VIRTUAL_WIDTH);
-        temp.y = ((xy.y / (float)(Gdx.graphics.getHeight()) ) * CoreValues_Static.VIRTUAL_HEIGHT);
-
-        return temp;
-    }
-
-    // Translate relative game coord to box2d coord system
-    private Vector2 convertFromGameCoordsToBox2DCoords(Vector2 xy)
-    {
-        Vector2 temp = new Vector2();
-        temp.x = xy.x;
-        temp.y = (CoreValues_Static.VIRTUAL_HEIGHT) - xy.y; // because of flipped y-axis
-        return temp;
-    }
 
     public void dispose()
     {
