@@ -24,7 +24,11 @@ public class Obstacle {
     private float height;
     private Color color;
 
-    public Obstacle(World world, Vector2 position1, Vector2 position2, float angle){
+    public enum Type {
+        REGULAR, BOUNCE
+    }
+
+    public Obstacle(World world, Vector2 position1, Vector2 position2, float angle, Type type){
 
 
         // Adjusting positions in order to make sure position1 has the smallest coordinates
@@ -45,12 +49,18 @@ public class Obstacle {
 
         PolygonShape boxShape = new PolygonShape();
         boxShape.setAsBox(width/ CoreValues_Static.PPM, height / CoreValues_Static.PPM);
-
         Fixture fixture = simulationBody.createFixture(boxShape,0.0f);
 
-        boxShape.dispose();
+        if (type == Type.REGULAR){
+            color = new Color(0.5f, 0.5f, 0.5f, 1.0f);
+        }
+        else if (type == Type.BOUNCE){
+            color = new Color(0.8f, 0.4f, 0.4f, 1.0f);
+            fixture.setRestitution(1f);
+            fixture.setFriction(0.1f);
+        }
 
-        color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+        boxShape.dispose();
     }
 
     public void render(Batch batch, ShapeRenderer shapeRenderer){
