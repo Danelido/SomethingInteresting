@@ -76,7 +76,7 @@ public class PlayState extends GameState {
 
         obstacles.add(obstacle);
         obstacles.add(obstacle2);
-
+        
         //Temporary walls around game area.
         Obstacle wall_upper =  new Obstacle(box2D_simulator.getWorld(), new Vector2(CoreValues_Static.VIRTUAL_WIDTH/2, (CoreValues_Static.VIRTUAL_HEIGHT)), new Vector2(CoreValues_Static.VIRTUAL_WIDTH, (CoreValues_Static.VIRTUAL_HEIGHT ) + 10 ), 0f);
         Obstacle wall_bottom =  new Obstacle(box2D_simulator.getWorld(), new Vector2(CoreValues_Static.VIRTUAL_WIDTH/2, 0), new Vector2(CoreValues_Static.VIRTUAL_WIDTH,  10 ), 0f);

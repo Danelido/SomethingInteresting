@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.smh.fam.somethinginteresting.game.Core.CoordinateTransformer;
 import com.smh.fam.somethinginteresting.game.Core.CoreValues_Static;
 import com.smh.fam.somethinginteresting.game.Core.TextureStorage;
 
@@ -42,7 +43,7 @@ public class Target {
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
-        bodyDef.position.set(position.x/ CoreValues_Static.PPM, position.y/CoreValues_Static.PPM);
+        bodyDef.position.set(position.scl(1f/CoreValues_Static.PPM));
 
         simulationBody = world.createBody(bodyDef);
 
@@ -65,10 +66,11 @@ public class Target {
     }
 
     public void render(Batch batch){
-        float[] batchPlacement = convertToBatchPlacement(simulationBody.getPosition(), new Vector2(radius, radius), angle);
+        float[] batchPlacement =
+                convertToBatchPlacement(CoordinateTransformer.ScreenTexturePosition(simulationBody.getPosition(), new Vector2(radius,radius)),
+                new Vector2(radius, radius), angle);
         batch.draw(texture,
-                (((batchPlacement[0] + batchPlacement[2]/2f) * CoreValues_Static.PPM) - CoreValues_Static.VIRTUAL_WIDTH/2)- batchPlacement[2]/2f,       // this have to be simplified somehow... aids
-                (((batchPlacement[1] + batchPlacement[3]/2f) * CoreValues_Static.PPM) - CoreValues_Static.VIRTUAL_HEIGHT/2) -batchPlacement[3]/2f,      // this have to be simplified somehow... aids
+                batchPlacement[0], batchPlacement[1],
                 batchPlacement[2]/2f, batchPlacement[3]/2f,
                 batchPlacement[2], batchPlacement[3],
                 1.0f, 1.0f,
