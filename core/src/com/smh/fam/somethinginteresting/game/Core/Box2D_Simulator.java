@@ -39,27 +39,6 @@ public class Box2D_Simulator {
         world.step(deltaT, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
     }
 
-    public void createBox(){
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(100 , 300);
-
-        Body body = world.createBody(bodyDef);
-
-        PolygonShape boxShape = new PolygonShape();
-        boxShape.setAsBox(30.0f, 30.0f);
-
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = boxShape;
-        fixtureDef.density = 0.5f;
-        fixtureDef.friction = 0.4f;
-        fixtureDef.restitution = 0.6f;
-
-        Fixture fixture = body.createFixture(fixtureDef);
-
-        boxShape.dispose();
-    }
-
     public void setGravity(Vector2 gravity){
         world.setGravity(gravity);
     }
