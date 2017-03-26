@@ -52,7 +52,6 @@ public class PlayState extends GameState {
     public void init() {
         inputHandler();
 
-
         camera = new OrthographicCamera(CoreValues_Static.VIRTUAL_WIDTH, CoreValues_Static.VIRTUAL_HEIGHT);
         box2DCamera = new OrthographicCamera();
         box2DCamera.setToOrtho(false,CoreValues_Static.VIRTUAL_WIDTH/CoreValues_Static.PPM, CoreValues_Static.VIRTUAL_HEIGHT/CoreValues_Static.PPM);
@@ -98,7 +97,6 @@ public class PlayState extends GameState {
     public void update() {
         float deltaT = Gdx.graphics.getDeltaTime();
 
-
         box2D_simulator.simulate(deltaT);
         if (ACCELEROMETER_AVAILABLE){
             Vector2 gravityVec = new Vector2(-Gdx.input.getAccelerometerY(), Gdx.input.getAccelerometerX());
@@ -114,9 +112,7 @@ public class PlayState extends GameState {
             }
              player.applyForceToPlayer(summedForce.scl(deltaT));
 
-
         player.applyForceToPlayer( summedForce.scl(deltaT) );
-
 
         camera_momentum = camera_momentum.scl((float) Math.pow(camera_momentumDecay, deltaT));
         camera.translate(camera_momentum.x, camera_momentum.y, 0);
@@ -138,7 +134,6 @@ public class PlayState extends GameState {
             obstacle.render(batch, shapeRenderer);
         }
 
-
         batch.begin();
 
         for (Target target: targets) {
@@ -151,10 +146,6 @@ public class PlayState extends GameState {
 
         batch.end();
 
-
-
-
-        
         //box2D_simulator.debugRenderer.render(box2D_simulator.getWorld(), box2DCamera.combined);
     }
 
@@ -196,7 +187,7 @@ public class PlayState extends GameState {
                 if(!player.playerIsTargeted()) {
                     Vector2 delta = new Vector2(camera_firstTouch.x-screenX, screenY-camera_firstTouch.y);
                     camera_momentum = camera_momentum.add(delta.scl(0.1f));
-                    camera_firstTouch = new Vector2(screenX, screenY);
+                    camera_firstTouch.set(screenX, screenY);
                 }
                 return false;
             }

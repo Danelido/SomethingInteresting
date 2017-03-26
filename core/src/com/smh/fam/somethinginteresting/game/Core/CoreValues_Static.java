@@ -18,11 +18,13 @@ public class CoreValues_Static {
     public static final float VIRTUAL_HEIGHT = (VIRTUAL_WIDTH / 16 * 9); // 16:9 format
 
     public static final float GRAVITY_CONSTANT = -9.82f;
-    public static final float FORCE_MULTIPLYER_CONSTANT = 4.5f;
-    public static final float FORCE_MAX = 3f;
+    public static final float FORCE_MULTIPLYER_CONSTANT = 1.50f; // increasing this will make the force stronger faster when draggin finger.
+    public static final float FORCE_MAX = 3.0f; // Max force, otherwise it will fly around the map like a retarded owl
+
+    // calculates the distance that needs to be dragged before reaching the distance that will generate max force, in this case 3.0f
     public static final float MAX_FORCE_DISTANCE = (CoreValues_Static.FORCE_MAX * CoreValues_Static.PPM) / CoreValues_Static.FORCE_MULTIPLYER_CONSTANT;
-    public static final float DIRECTION_LINE_SIZE_FIXED_CONSTANT = 0.05f;
-    public static final float MAX_FORCE_DIRECTION_LINE_POWER = (CoreValues_Static.MAX_FORCE_DISTANCE / CoreValues_Static.PPM) * DIRECTION_LINE_SIZE_FIXED_CONSTANT;
+    // Calculate from max force distance which is screen coords to coordinates relative to the world
+    public static final float MAX_FORCE_DISTANCE_IN_PPM = (CoreValues_Static.MAX_FORCE_DISTANCE / CoreValues_Static.PPM);
 
 }
 
