@@ -14,6 +14,7 @@ import com.smh.fam.somethinginteresting.game.Core.Box2D_Simulator;
 import com.smh.fam.somethinginteresting.game.Core.CoreValues_Static;
 import com.smh.fam.somethinginteresting.game.Core.Level;
 import com.smh.fam.somethinginteresting.game.Core.TextureStorage;
+import com.smh.fam.somethinginteresting.game.Game.BlackHole;
 import com.smh.fam.somethinginteresting.game.Game.Obstacle;
 import com.smh.fam.somethinginteresting.game.Game.Player;
 import com.smh.fam.somethinginteresting.game.Game.Target;
@@ -47,6 +48,7 @@ public class PlayState extends GameState {
     private Player player;
     private Array<Obstacle> obstacles;
     private Array<Target> targets;
+    private Array<BlackHole> blackHoles;
 
     @Override
     public void init() {
@@ -66,6 +68,7 @@ public class PlayState extends GameState {
         box2D_simulator.setGravity(level.getGravityVector());
         obstacles = level.getObstacles();
         targets = level.getTargets();
+        blackHoles = level.getBlackHoles();
 
         //player = new Player(box2D_simulator.getWorld(), textureStorage, level.getPlayerPosition(), box2DCamera);
         player = new Player(box2D_simulator.getWorld(), textureStorage, new Vector2(500,600), box2DCamera);
@@ -104,12 +107,11 @@ public class PlayState extends GameState {
         }
 
         Vector2 summedForce = new Vector2(0,0);
-        for (Target target: targets) {
-            target.update(deltaT);
-            summedForce = summedForce.add(target.getForce(player.getPosition()));
+        for (BlackHole blackHole: blackHoles) {
+            blackHole.update(deltaT);
+            summedForce = summedForce.add(blackHole.getForce(player.getPosition()));
 
-            }
-             player.applyForceToPlayer(summedForce.scl(deltaT));
+        }
 
         player.applyForceToPlayer( summedForce.scl(deltaT) );
 
@@ -137,6 +139,10 @@ public class PlayState extends GameState {
 
         for (Target target: targets) {
             target.render(batch);
+        }
+
+        for (BlackHole blackHole: blackHoles) {
+            blackHole.render(batch);
         }
 
         player.render(batch); // Render player
