@@ -25,7 +25,7 @@ public class Obstacle {
     private Color color;
 
     public enum Type {
-        REGULAR, BOUNCE
+        REGULAR, BOUNCE, BREAK
     }
 
     public Obstacle(World world, Vector2 position1, Vector2 position2, float angle, Type type){
@@ -53,11 +53,18 @@ public class Obstacle {
 
         if (type == Type.REGULAR){
             color = new Color(0.5f, 0.5f, 0.5f, 1.0f);
+            fixture.setRestitution(0.2f);
+            fixture.setFriction(0.6f);
         }
         else if (type == Type.BOUNCE){
-            color = new Color(0.8f, 0.4f, 0.4f, 1.0f);
+            color = new Color(0.34f, 0.74f, 0.53f, 1.0f);
             fixture.setRestitution(1f);
             fixture.setFriction(0.1f);
+        }
+        else if (type == Type.BREAK){
+            color = new Color(0.12f, 0.12f, 0.22f, 1.0f);
+            fixture.setRestitution(0f);
+            fixture.setFriction(0.95f);
         }
 
         boxShape.dispose();

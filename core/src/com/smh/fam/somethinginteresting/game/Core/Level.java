@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.smh.fam.somethinginteresting.game.Game.BlackHole;
 import com.smh.fam.somethinginteresting.game.Game.Obstacle;
 import com.smh.fam.somethinginteresting.game.Game.Player;
 import com.smh.fam.somethinginteresting.game.Game.Target;
@@ -36,6 +37,7 @@ public class Level {
     private Vector2 gravityVector;
     private Array<Obstacle> obstacles;
     private Array<Target> targets;
+    private Array<BlackHole> blackHoles;
 
     public Level(World world, TextureStorage textureStorage){
         this.world = world;
@@ -43,6 +45,7 @@ public class Level {
 
         obstacles = new Array<Obstacle>();
         targets = new Array<Target>();
+        blackHoles = new Array<BlackHole>();
         playerPosition = new Vector2(0f, 0f);
         gravityVector = new Vector2(0f, 0f);
     }
@@ -69,12 +72,12 @@ public class Level {
 
             }
 
-            // Get gravity vector
+            // Get world properties
             {
-                NodeList nList = doc.getElementsByTagName("gravity");
+                NodeList nList = doc.getElementsByTagName("world");
                 if (nList.getLength() != 0){
                     Element playerNode = (Element) nList.item(0);
-                    NodeList position = playerNode.getElementsByTagName("vec");
+                    NodeList position = playerNode.getElementsByTagName("GravityVec");
                     gravityVector.x = Float.parseFloat(position.item(0).getTextContent());
                     gravityVector.y = Float.parseFloat(position.item(1).getTextContent());
                 }
@@ -110,9 +113,10 @@ public class Level {
                         String typeStr = obsNode.getElementsByTagName("type").item(0).getTextContent();
                         if      (typeStr.equals("REGULAR")) type = Obstacle.Type.REGULAR;
                         else if (typeStr.equals("BOUNCE"))  type = Obstacle.Type.BOUNCE;
+                        else if (typeStr.equals("BREAK"))  type = Obstacle.Type.BREAK;
 
                     }
-                    obstacles.add(new Obstacle(world, pos1, pos2, angle,type));
+                    obstacles.add(new Obstacle(world, pos1, pos2, angle, type));
 
                     // Get color if exists
                     if (obsNode.getElementsByTagName("color").getLength() != 0) {
@@ -135,13 +139,29 @@ public class Level {
                     pos.x = Float.parseFloat(position.item(0).getTextContent());
                     pos.y = Float.parseFloat(position.item(1).getTextContent());
 
+                    targets.add(new Target(world, textureStorage, pos));
+                }
+            }
+
+            // Generate black holes
+            {
+                NodeList nList = doc.getElementsByTagName("blackhole");
+                for (int i = 0; i < nList.getLength(); i++){
+                    Element obsNode = (Element) nList.item(i);
+
+                    // Get positions
+                    NodeList position = obsNode.getElementsByTagName("pos");
+                    Vector2 pos = new Vector2();
+                    pos.x = Float.parseFloat(position.item(0).getTextContent());
+                    pos.y = Float.parseFloat(position.item(1).getTextContent());
+
                     // Get radius if exists
-                    float radius = 50f;
+                    float radius = 64f;
                     if (obsNode.getElementsByTagName("radius").getLength() != 0) {
                         radius = Float.parseFloat(obsNode.getElementsByTagName("radius").item(0).getTextContent());
                     }
 
-                    targets.add(new Target(world, textureStorage, pos, radius));
+                    blackHoles.add(new BlackHole(world, textureStorage, pos, radius));
                 }
             }
 
@@ -162,5 +182,6 @@ public class Level {
     public Array<Obstacle> getObstacles(){
         return obstacles;
     }
-    public Array<Target> getTargets() {return targets;}
+    public Array<Target> getTargets() { return targets; }
+    public Array<BlackHole> getBlackHoles() { return  blackHoles; }
 }

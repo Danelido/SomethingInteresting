@@ -4,55 +4,90 @@
         <pos>100.0</pos>
         <pos>200.0</pos>
     </player>
-    
-    <gravity>
-        <vec>0</vec>
-        <vec>-9.82</vec>
-    </gravity>
+
+    <world>
+        <GravityVec>0</GravityVec>
+        <GravityVec>-9.82</GravityVec>
+    </world>
 
     <target>
-        <pos>400.0</pos>
-        <pos>400.0</pos>
-        <radius>75</radius>
+        <pos>350</pos>
+        <pos>40</pos>
     </target>
 
-    <obs> <!-- Test obstacle -->
-        <pos1>60</pos1>
-        <pos1>60</pos1>
+    <blackhole>
+        <pos>800</pos>
+        <pos>400</pos>
 
-        <pos2>70</pos2>
-        <pos2>70</pos2>
+        <radius>50</radius> <!-- Affects black hole pull-force -->
+    </blackhole>
 
-        <type>REGULAR</type>
+    <!-- Test obstacle -->
+    <obs>
+        <pos1>0</pos1>
+        <pos1>0</pos1>
+
+        <pos2>300</pos2>
+        <pos2>45</pos2>
+
+        <type>BREAK</type>
     </obs>
-    <obs> <!-- Test obstacle -->
-        <pos1>80</pos1>
-        <pos1>80</pos1>
 
-        <pos2>90</pos2>
-        <pos2>90</pos2>
+    <obs>
+        <pos1>750</pos1>
+        <pos1>0</pos1>
+
+        <pos2>1000</pos2>
+        <pos2>45</pos2>
 
         <type>BOUNCE</type>
     </obs>
 
-    <obs> <!-- left wall -->
-        <pos1>-700</pos1>
-        <pos1>-750</pos1>
+    <obs>
+        <pos1>500</pos1>
+        <pos1>350</pos1>
 
-        <pos2>-620</pos2>
+        <pos2>750</pos2>
+        <pos2>375</pos2>
+        <angle>4</angle>
+
+        <type>REGULAR</type>
+    </obs>
+
+
+
+    <!-- Walls -->
+    <obs> <!-- left wall -->
+        <pos1>-10</pos1>
+        <pos1>0</pos1>
+
+        <pos2>10</pos2>
         <pos2>750</pos2>
 
-        <color>#ff6699</color>
     </obs>
 
     <obs> <!-- right wall -->
-        <pos1>700</pos1>
-        <pos1>-750</pos1>
+        <pos1>1270</pos1>
+        <pos1>0</pos1>
 
-        <pos2>650</pos2>
+        <pos2>1290</pos2>
         <pos2>750</pos2>
+    </obs>
 
-        <color>#ff6699</color>
+    <obs> <!-- upper wall -->
+        <pos1>0</pos1>
+        <pos1>740</pos1>
+
+        <pos2>1290</pos2>
+        <pos2>760</pos2>
+    </obs>
+
+    <obs> <!-- lower wall -->
+        <pos1>0</pos1>
+        <pos1>-10</pos1>
+
+        <pos2>1290</pos2>
+        <pos2>10</pos2>
     </obs>
 
 </level>

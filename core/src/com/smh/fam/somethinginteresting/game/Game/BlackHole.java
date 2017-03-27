@@ -8,7 +8,6 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.smh.fam.somethinginteresting.game.Core.CoordinateTransformer;
 import com.smh.fam.somethinginteresting.game.Core.CoreValues_Static;
@@ -19,27 +18,33 @@ import java.io.FileNotFoundException;
 import static com.smh.fam.somethinginteresting.game.Core.RenderingHelper.convertToBatchPlacement;
 
 /**
- * Created by Axel on 2017-03-26.
+ * Created by Axel on 2017-03-27.
  */
 
-public class Target {
+public class BlackHole {
     private Texture texture;
     private Body simulationBody;
 
     private float radius;
+    private float pullForce;
+    private float angle;
 
-    public Target(World world, TextureStorage textureStorage, Vector2 position){
+    private final float ANGLULAR_SPEED = 4f; // rads per sec
+
+    public BlackHole(World world, TextureStorage textureStorage, Vector2 position, float radius){
         try {
-            texture = textureStorage.getTexture("target.png");
+            texture = textureStorage.getTexture("blackHole.png");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
-        radius = 20;
+        this.radius = radius;
+        pullForce = (float) (Math.pow(radius/32f,2f)*Math.PI);
+        angle = 0;
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
-        bodyDef.position.set(position.scl(1f/CoreValues_Static.PPM));
+        bodyDef.position.set(position.scl(1f/ CoreValues_Static.PPM));
 
         simulationBody = world.createBody(bodyDef);
 
@@ -57,11 +62,14 @@ public class Target {
         circleShape.dispose();
     }
 
+    public void update(float deltaT){
+        angle -= ANGLULAR_SPEED*deltaT;
+    }
 
     public void render(Batch batch){
         float[] batchPlacement =
                 convertToBatchPlacement(CoordinateTransformer.ScreenTexturePosition(simulationBody.getPosition(), new Vector2(radius,radius)),
-                new Vector2(radius, radius), 0);
+                        new Vector2(radius, radius), angle);
         batch.draw(texture,
                 batchPlacement[0], batchPlacement[1],
                 batchPlacement[2]/2f, batchPlacement[3]/2f,
@@ -71,5 +79,11 @@ public class Target {
                 0, 0,
                 texture.getWidth(), texture.getHeight(),
                 false, false );
+    }
+
+    public Vector2 getForce(Vector2 position){
+        Vector2 delta = simulationBody.getPosition().sub(position);
+        float length = delta.len();
+        return delta.nor().scl((float) (pullForce*radius/Math.pow(length+1f,2f)));
     }
 }

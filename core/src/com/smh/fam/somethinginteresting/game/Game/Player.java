@@ -113,7 +113,7 @@ public class Player {
                 arrow_width * (arrow_size_scale), (arrow_height /2f) * (arrow_size_scale),
                 arrow_width * arrow_size_scale, arrow_height * arrow_size_scale,
                 1.f,1.f,
-                (float)arrow_angle,
+                (float) arrow_angle+180f,
                 0,0,
                 arrowTexture.getWidth(), arrowTexture.getHeight(),
                 false,false);
@@ -125,15 +125,11 @@ public class Player {
     // Apply force to player
     private void applyForceToPlayer(Vector2 force_on_player_location, Vector2 fingerReleased)
     {
-        Vector2 direction = new Vector2();
-
         float x =  (force_on_player_location.x - fingerReleased.x) * CoreValues_Static.PPM;
         float y =  (force_on_player_location.y - fingerReleased.y) * CoreValues_Static.PPM;
 
-        double c = Math.sqrt( (x * x) + (y * y) );
-
-        direction.x = (float)(x / c);
-        direction.y =  (float)(y / c);
+        Vector2 direction = new Vector2(x, y).nor().scl(-1f);
+        double c = new Vector2(x,y).len();
 
         float force = (float)(c * CoreValues_Static.FORCE_MULTIPLYER_CONSTANT) / CoreValues_Static.PPM;
 
