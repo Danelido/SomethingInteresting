@@ -16,6 +16,7 @@ import com.smh.fam.somethinginteresting.game.Core.Level;
 import com.smh.fam.somethinginteresting.game.Core.TextureStorage;
 import com.smh.fam.somethinginteresting.game.Game.Lights.LightManager;
 import com.smh.fam.somethinginteresting.game.Game.Lights.PointLight;
+import com.smh.fam.somethinginteresting.game.Game.BlackHole;
 import com.smh.fam.somethinginteresting.game.Game.Obstacle;
 import com.smh.fam.somethinginteresting.game.Game.Player;
 import com.smh.fam.somethinginteresting.game.Game.Target;
@@ -49,6 +50,7 @@ public class PlayState extends GameState {
     private Player player;
     private Array<Obstacle> obstacles;
     private Array<Target> targets;
+    private Array<BlackHole> blackHoles;
 
     private LightManager lightManager;
     private PointLight playerLight;
@@ -72,9 +74,11 @@ public class PlayState extends GameState {
         box2D_simulator.setGravity(level.getGravityVector());
         obstacles = level.getObstacles();
         targets = level.getTargets();
+        blackHoles = level.getBlackHoles();
 
         //player = new Player(box2D_simulator.getWorld(), textureStorage, level.getPlayerPosition(), box2DCamera);
         player = new Player(box2D_simulator.getWorld(), textureStorage, new Vector2(500,600), box2DCamera);
+
 
         Obstacle obstacle =  new Obstacle(box2D_simulator.getWorld(), new Vector2(500, 100.f), new Vector2(520.f, 200.f), 45f, Obstacle.Type.REGULAR);
         Obstacle obstacle2 = new Obstacle(box2D_simulator.getWorld(), new Vector2(500, 200.f), new Vector2(600.f, 210.f), 2f, Obstacle.Type.REGULAR);
@@ -119,12 +123,11 @@ public class PlayState extends GameState {
         }
 
         Vector2 summedForce = new Vector2(0,0);
-        for (Target target: targets) {
-            target.update(deltaT);
-            summedForce = summedForce.add(target.getForce(player.getPosition()));
+        for (BlackHole blackHole: blackHoles) {
+            blackHole.update(deltaT);
+            summedForce = summedForce.add(blackHole.getForce(player.getPosition()));
 
-            }
-             player.applyForceToPlayer(summedForce.scl(deltaT));
+        }
 
         player.applyForceToPlayer( summedForce.scl(deltaT) );
 
@@ -156,6 +159,10 @@ public class PlayState extends GameState {
 
         for (Target target: targets) {
             target.render(batch);
+        }
+
+        for (BlackHole blackHole: blackHoles) {
+            blackHole.render(batch);
         }
 
         player.render(batch); // Render player
