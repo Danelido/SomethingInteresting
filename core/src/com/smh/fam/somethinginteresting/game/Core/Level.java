@@ -113,9 +113,10 @@ public class Level {
                         String typeStr = obsNode.getElementsByTagName("type").item(0).getTextContent();
                         if      (typeStr.equals("REGULAR")) type = Obstacle.Type.REGULAR;
                         else if (typeStr.equals("BOUNCE"))  type = Obstacle.Type.BOUNCE;
+                        else if (typeStr.equals("BREAK"))  type = Obstacle.Type.BREAK;
 
                     }
-                    obstacles.add(new Obstacle(world, pos1, pos2, angle,type));
+                    obstacles.add(new Obstacle(world, pos1, pos2, angle, type));
 
                     // Get color if exists
                     if (obsNode.getElementsByTagName("color").getLength() != 0) {
