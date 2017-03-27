@@ -41,7 +41,7 @@ public class PlayState extends GameState {
 
     protected PlayState(GameStateManager gsm) {
         super(gsm);
-        ACCELEROMETER_AVAILABLE = Gdx.input.isPeripheralAvailable(Input.Peripheral.Accelerometer);
+        ACCELEROMETER_AVAILABLE = Gdx.input.isPeripheralAvailable(Input.Peripheral.Accelerometer) && false;
     }
 
     private Player player;
@@ -100,7 +100,6 @@ public class PlayState extends GameState {
         box2D_simulator.simulate(deltaT);
         if (ACCELEROMETER_AVAILABLE){
             Vector2 gravityVec = new Vector2(-Gdx.input.getAccelerometerY(), Gdx.input.getAccelerometerX());
-            gravityVec = gravityVec.scl(CoreValues_Static.GRAVITY_CONSTANT/10f);
             box2D_simulator.setGravity(gravityVec);
         }
 
