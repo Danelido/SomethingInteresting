@@ -26,6 +26,7 @@ public class BlackHole {
     private Body simulationBody;
 
     private float radius;
+    private float pullForce;
     private float angle;
 
     private final float ANGLULAR_SPEED = 4f; // rads per sec
@@ -38,6 +39,7 @@ public class BlackHole {
         }
 
         this.radius = radius;
+        pullForce = (float) (Math.pow(radius/32f,2f)*Math.PI);
         angle = 0;
 
         BodyDef bodyDef = new BodyDef();
@@ -82,6 +84,6 @@ public class BlackHole {
     public Vector2 getForce(Vector2 position){
         Vector2 delta = simulationBody.getPosition().sub(position);
         float length = delta.len();
-        return delta.nor().scl((float) (10f*radius/Math.pow(length+1f,2f)));
+        return delta.nor().scl((float) (pullForce*radius/Math.pow(length+1f,2f)));
     }
 }

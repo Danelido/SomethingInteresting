@@ -19,7 +19,7 @@
         <pos>400.0</pos>
         <pos>400.0</pos>
 
-        <radius>64</radius> <!-- Black Hole force scales with radius x10 -->
+        <radius>64</radius> <!-- Affects blackhole pull-force -->
     </blackhole>
 
     <obs> <!-- Test obstacle -->
