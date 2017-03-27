@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -26,7 +25,7 @@ import com.smh.fam.somethinginteresting.game.Game.Target;
 
 public class PlayState extends GameState {
 
-    private Camera camera;
+    private OrthographicCamera camera;
     private OrthographicCamera box2DCamera;
 
     private Box2D_Simulator box2D_simulator;
@@ -36,7 +35,7 @@ public class PlayState extends GameState {
 
     private final boolean ACCELEROMETER_AVAILABLE;
 
-    private Vector2 camera_firstTouch = new Vector2(); // belonds to camera movement code, might be temporary
+    private Vector2 camera_firstTouch = new Vector2();
     private Vector2 camera_momentum = new Vector2(0.0f, 0.0f);
     private float camera_momentumDecay = 0.001f;
 
@@ -158,7 +157,11 @@ public class PlayState extends GameState {
     {
         inputProcessor = new InputProcessor() {
             @Override
-            public boolean keyDown(int keycode) {return false;}
+            public boolean keyDown(int keycode) {
+                // Reset camera zoom
+                if(Input.Keys.R == keycode) resetCameraZoom();
+                return false;
+            }
 
             @Override
             public boolean keyUp(int keycode) {
@@ -204,6 +207,7 @@ public class PlayState extends GameState {
 
             @Override
             public boolean scrolled(int amount) {
+               zoomCamera(amount);
                 return false;
             }
         };
@@ -217,4 +221,14 @@ public class PlayState extends GameState {
         shapeRenderer.dispose();
     }
 
+    private void zoomCamera(float amount){
+        camera.zoom += amount;
+        player.setCameraZoom(camera.zoom);
+    }
+    private void resetCameraZoom(){
+        camera.zoom = 1.0f;
+        player.setCameraZoom(camera.zoom);
+    }
+
 }
+
