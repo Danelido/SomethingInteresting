@@ -32,6 +32,7 @@ public class Player {
     private Body simulationBody;
     private Texture texture, arrowTexture;
     private Camera camera;
+    private float camera_zoom_amount = 1.0f;
     private Vector2 camera_firstTouch = new Vector2();
     // Player width & height box2d
     private final float WIDTH = 30f;
@@ -42,11 +43,9 @@ public class Player {
     private float arrow_height = 30f;
     private double arrow_angle = 0.0f;
 
-    private float arrow_scale_minimum_size = 1f/3f;                 // Minimum size of arrow
-    private float arrow_width_scale = arrow_scale_minimum_size;     // The scale -width
-    private float arrow_height_scale = arrow_scale_minimum_size;    // The scale - height
-    private float forceDirectionLine_power = 0.0f;                   // The thickness of the direction sprite will get thicker when the distance between the box and finger gets larger
-
+    private float arrow_scale_minimum_size = 1f/5f;                 // Minimum size of arrow
+    private float arrow_size_scale = arrow_scale_minimum_size;      // Scaling of our arrow
+    private float arrowThickness = 0.0f;                            // The thickness of the direction sprite will get thicker when the distance between the box and finger gets larger
 
     private Vector2 force_whereToApplyForceToPlayer = new Vector2(0,0); // Always going to be in the center, atleast for now. Initialized to 0,0 instead of null
     private Vector2 force_currentFingerPositionOnScreen = new Vector2(0,0);
@@ -104,13 +103,15 @@ public class Player {
     // Display which direction you're applying the force
     public void displayForceDirection(Batch batch)
     {
-        force_whereToApplyForceToPlayer = CoordinateTransformer.ScreenTexturePosition(simulationBody.getPosition(), new Vector2(arrow_width, arrow_height)); // to keep the line centered on player at all times
-        batch.setColor(arrow_width_scale ,1.0f - arrow_width_scale, 0.0f, 0.6f);
+        // to keep the line centered on player at all times
+        force_whereToApplyForceToPlayer = CoordinateTransformer.ScreenTexturePosition(simulationBody.getPosition(), new Vector2(arrow_width, arrow_height));
+
+        batch.setColor(arrow_size_scale ,1.0f - arrow_size_scale, 0.0f, 0.6f);
         batch.draw(arrowTexture,
-                force_whereToApplyForceToPlayer.x - arrow_width*  (arrow_width_scale),
-                force_whereToApplyForceToPlayer.y - (arrow_height /2f) * arrow_height_scale,
-                arrow_width * (arrow_width_scale), (arrow_height /2f) * (arrow_height_scale),
-                arrow_width * arrow_width_scale, arrow_height * arrow_width_scale,
+                force_whereToApplyForceToPlayer.x - arrow_width*  (arrow_size_scale),
+                force_whereToApplyForceToPlayer.y - (arrow_height /2f) * arrow_size_scale,
+                arrow_width * (arrow_size_scale), (arrow_height /2f) * (arrow_size_scale),
+                arrow_width * arrow_size_scale, arrow_height * arrow_size_scale,
                 1.f,1.f,
                 (float)arrow_angle,
                 0,0,
@@ -147,7 +148,7 @@ public class Player {
 
     public void fingerTouchedScreen(int screenX, int screenY, int pointer, int button)
     {
-        camera_firstTouch = CoordinateTransformer.fingerPressedInWorldSpace(screenX, screenY, new Vector2(camera.position.x, camera.position.y));
+        camera_firstTouch = CoordinateTransformer.fingerPressedInWorldSpace(screenX, screenY, new Vector2(camera.position.x, camera.position.y), camera_zoom_amount);
         Vector2 playerPoint = CoordinateTransformer.box2DCoordinatesToWorldCoordinates(simulationBody.getPosition());
             // If finger is on the box
              if(camera_firstTouch.x >= playerPoint.x - WIDTH
@@ -157,7 +158,8 @@ public class Player {
              {
                  force_whereToApplyForceToPlayer.set(playerPoint.x, playerPoint.y);
                  force_currentFingerPositionOnScreen.set(camera_firstTouch.x/CoreValues_Static.PPM, camera_firstTouch.y/CoreValues_Static.PPM);
-                 forceDirectionLine_power = 0.0f;
+                 arrowThickness = 0.0f;
+                 arrow_angle = getDegreesBetweenTwoPosition(camera_firstTouch, playerPoint);
                  playerTargetedByFinger = true;
             }
     }
@@ -168,54 +170,64 @@ public class Player {
         // Only call this if the box is being targeted by the finger
         if(playerTargetedByFinger) {
             playerTargetedByFinger = false;
-            forceDirectionLine_power = 0.0f;
-            arrow_width_scale = arrow_scale_minimum_size;
-            arrow_height_scale = arrow_scale_minimum_size;
+            arrowThickness = 0.0f;
+            arrow_size_scale = arrow_scale_minimum_size;
             applyForceToPlayer(simulationBody.getPosition(),force_currentFingerPositionOnScreen );
         }
     }
 
     public void fingerDraggedOnScreen(int screenX, int screenY, int pointer) {
         if (playerTargetedByFinger) {
-            // Create a vector and convert it then use those coords to render the "force line" correctly
-            Vector2 point = CoordinateTransformer.fingerPressedInWorldSpace(screenX, screenY, new Vector2(camera.position.x, camera.position.y));
+
+            Vector2 point = CoordinateTransformer.fingerPressedInWorldSpace(screenX, screenY, new Vector2(camera.position.x, camera.position.y), camera_zoom_amount);
             Vector2 playerPoint = CoordinateTransformer.box2DCoordinatesToWorldCoordinates(simulationBody.getPosition());
+
+            // Create a vector and convert it then use those coords to render the "force line" correctly
             force_currentFingerPositionOnScreen.set((point.x) / CoreValues_Static.PPM, (point.y) / CoreValues_Static.PPM);
 
+            // Retrieves the angle between the box and finger
+            arrow_angle = getDegreesBetweenTwoPosition(point, playerPoint);
+
+            // Distance between box and finger
             float deltaDistance = point.dst(playerPoint);
 
-            arrow_angle = Math.toDegrees(Math.atan2((point.y - playerPoint.y), (point.x - playerPoint.x)));
-
-            // reduce the angle
-            arrow_angle = arrow_angle % 360;
-
-            // force it to be the positive remainder, so that 0 <= angle < 360
-            arrow_angle = (arrow_angle + 360) % 360;
-
-            // force into the minimum absolute value residue class, so that -180 < angle <= 180
-            if (arrow_angle > 180) arrow_angle -= 360;
-
+            // Distance cant go higher than the MAX_DISTANCE
             if(deltaDistance >= CoreValues_Static.MAX_FORCE_DISTANCE) deltaDistance =CoreValues_Static.MAX_FORCE_DISTANCE;
 
-            float currentPower = (deltaDistance/CoreValues_Static.PPM);
+            // The thickness of the arrow depends on the distance
+            float tempThickness = (deltaDistance/CoreValues_Static.PPM);
 
             // At that max force distance there is no need to keep increasing power (thickness/size)
-            if (currentPower >= CoreValues_Static.MAX_FORCE_DISTANCE_IN_PPM) {currentPower = CoreValues_Static.MAX_FORCE_DISTANCE_IN_PPM;}
-            if(currentPower <= 0.0f) currentPower = 0.0f;
+            if (tempThickness >= CoreValues_Static.MAX_FORCE_DISTANCE_IN_PPM) {tempThickness = CoreValues_Static.MAX_FORCE_DISTANCE_IN_PPM;}
+            if(tempThickness <= 0.0f) tempThickness = 0.0f;
 
-            forceDirectionLine_power = currentPower;
+            // After the tempThickness variable have been checked, apply it to arrowThickness;
+            arrowThickness = tempThickness;
 
             // Calculate scale
-            arrow_width_scale = ((forceDirectionLine_power) / CoreValues_Static.MAX_FORCE_DISTANCE_IN_PPM) + arrow_scale_minimum_size;
-            if (arrow_width_scale >= 1.0f) {
-                arrow_width_scale = 1.0f;
-            }
-
-            arrow_height_scale = ((forceDirectionLine_power) / CoreValues_Static.MAX_FORCE_DISTANCE_IN_PPM) + arrow_scale_minimum_size;
-            if (arrow_height_scale >= 1.0f){
-                arrow_height_scale = 1.0f;
+            arrow_size_scale = ((arrowThickness) / CoreValues_Static.MAX_FORCE_DISTANCE_IN_PPM) + arrow_scale_minimum_size;
+            if (arrow_size_scale >= 1.0f) {
+                arrow_size_scale = 1.0f;
             }
         }
+    }
+
+    // Return a value between -180 and 180
+    private double getDegreesBetweenTwoPosition(Vector2 point1, Vector2 point2){
+
+        double temp;
+        temp = Math.toDegrees(Math.atan2((point1.y - point2.y), (point1.x - point2.x)));
+
+        // reduce the angle
+        temp = temp % 360;
+
+        // force it to be the positive remainder, so that 0 <= angle < 360
+        temp = (temp + 360) % 360;
+
+        // force into the minimum absolute value residue class, so that -180 < angle <= 180
+        if (temp > 180) temp -= 360;
+
+        return temp;
     }
 
     public void dispose()
@@ -225,5 +237,6 @@ public class Player {
 
     public boolean playerIsTargeted() {return playerTargetedByFinger;}
     public Vector2 getPosition(){return simulationBody.getPosition();}
+    public void setCameraZoom(float amount){camera_zoom_amount = amount;}
 
 }
