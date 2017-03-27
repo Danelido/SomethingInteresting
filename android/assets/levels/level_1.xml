@@ -4,6 +4,11 @@
         <pos>100.0</pos>
         <pos>200.0</pos>
     </player>
+    
+    <gravity>
+        <vec>0</vec>
+        <vec>-9.82</vec>
+    </gravity>
 
     <target>
         <pos>400.0</pos>

@@ -56,7 +56,6 @@ public class PlayState extends GameState {
         box2DCamera = new OrthographicCamera();
         box2DCamera.setToOrtho(false,CoreValues_Static.VIRTUAL_WIDTH/CoreValues_Static.PPM, CoreValues_Static.VIRTUAL_HEIGHT/CoreValues_Static.PPM);
         box2D_simulator = new Box2D_Simulator();
-        box2D_simulator.setGravity(new Vector2(0f, CoreValues_Static.GRAVITY_CONSTANT));
 
         textureStorage = new TextureStorage();
         shapeRenderer = new ShapeRenderer();
@@ -64,6 +63,7 @@ public class PlayState extends GameState {
         Level level = new Level(box2D_simulator.getWorld(), textureStorage);
         level.readFromXML("levels/level_1.xml");
 
+        box2D_simulator.setGravity(level.getGravityVector());
         obstacles = level.getObstacles();
         targets = level.getTargets();
 

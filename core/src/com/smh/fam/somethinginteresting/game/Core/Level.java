@@ -33,6 +33,7 @@ public class Level {
     private final TextureStorage textureStorage;
 
     private Vector2 playerPosition;
+    private Vector2 gravityVector;
     private Array<Obstacle> obstacles;
     private Array<Target> targets;
 
@@ -43,6 +44,7 @@ public class Level {
         obstacles = new Array<Obstacle>();
         targets = new Array<Target>();
         playerPosition = new Vector2(0f, 0f);
+        gravityVector = new Vector2(0f, 0f);
     }
 
     public void readFromXML(String fileName){
@@ -55,7 +57,7 @@ public class Level {
             Document doc = dBuilder.parse(new InputSource(new StringReader(file.readString())));
             doc.getDocumentElement().normalize();
 
-            // Get player-position
+            // Get player position
             {
                 NodeList nList = doc.getElementsByTagName("player");
                 if (nList.getLength() != 0){
@@ -63,6 +65,18 @@ public class Level {
                     NodeList position = playerNode.getElementsByTagName("pos");
                     playerPosition.x = Float.parseFloat(position.item(0).getTextContent());
                     playerPosition.y = Float.parseFloat(position.item(1).getTextContent());
+                }
+
+            }
+
+            // Get gravity vector
+            {
+                NodeList nList = doc.getElementsByTagName("gravity");
+                if (nList.getLength() != 0){
+                    Element playerNode = (Element) nList.item(0);
+                    NodeList position = playerNode.getElementsByTagName("vec");
+                    gravityVector.x = Float.parseFloat(position.item(0).getTextContent());
+                    gravityVector.y = Float.parseFloat(position.item(1).getTextContent());
                 }
 
             }
@@ -144,6 +158,7 @@ public class Level {
     public Vector2 getPlayerPosition(){
         return playerPosition;
     }
+    public Vector2 getGravityVector()  { return gravityVector; }
     public Array<Obstacle> getObstacles(){
         return obstacles;
     }
