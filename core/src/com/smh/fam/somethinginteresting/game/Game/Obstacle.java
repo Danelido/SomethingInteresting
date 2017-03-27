@@ -53,6 +53,8 @@ public class Obstacle {
 
         if (type == Type.REGULAR){
             color = new Color(0.5f, 0.5f, 0.5f, 1.0f);
+            fixture.setRestitution(0.2f);
+            fixture.setFriction(0.6f);
         }
         else if (type == Type.BOUNCE){
             color = new Color(0.8f, 0.4f, 0.4f, 1.0f);

@@ -72,12 +72,12 @@ public class Level {
 
             }
 
-            // Get gravity vector
+            // Get world properties
             {
-                NodeList nList = doc.getElementsByTagName("gravity");
+                NodeList nList = doc.getElementsByTagName("world");
                 if (nList.getLength() != 0){
                     Element playerNode = (Element) nList.item(0);
-                    NodeList position = playerNode.getElementsByTagName("vec");
+                    NodeList position = playerNode.getElementsByTagName("GravityVec");
                     gravityVector.x = Float.parseFloat(position.item(0).getTextContent());
                     gravityVector.y = Float.parseFloat(position.item(1).getTextContent());
                 }

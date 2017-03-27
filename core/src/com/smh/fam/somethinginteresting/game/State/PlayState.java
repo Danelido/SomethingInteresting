@@ -72,25 +72,6 @@ public class PlayState extends GameState {
         //player = new Player(box2D_simulator.getWorld(), textureStorage, level.getPlayerPosition(), box2DCamera);
         player = new Player(box2D_simulator.getWorld(), textureStorage, new Vector2(500,600), box2DCamera);
 
-        Obstacle obstacle =  new Obstacle(box2D_simulator.getWorld(), new Vector2(500, 100.f), new Vector2(520.f, 200.f), 45f, Obstacle.Type.REGULAR);
-        Obstacle obstacle2 = new Obstacle(box2D_simulator.getWorld(), new Vector2(500, 200.f), new Vector2(600.f, 210.f), 2f, Obstacle.Type.REGULAR);
-
-        obstacles.add(obstacle);
-        obstacles.add(obstacle2);
-        
-        //Temporary walls around game area.
-
-        Obstacle wall_upper =  new Obstacle(box2D_simulator.getWorld(), new Vector2(CoreValues_Static.VIRTUAL_WIDTH/2, (CoreValues_Static.VIRTUAL_HEIGHT)), new Vector2(CoreValues_Static.VIRTUAL_WIDTH, (CoreValues_Static.VIRTUAL_HEIGHT ) + 10 ), 0f, Obstacle.Type.REGULAR);
-        Obstacle wall_bottom =  new Obstacle(box2D_simulator.getWorld(), new Vector2(CoreValues_Static.VIRTUAL_WIDTH/2, 0), new Vector2(CoreValues_Static.VIRTUAL_WIDTH,  10 ), 0f, Obstacle.Type.REGULAR);
-        Obstacle wall_left =  new Obstacle(box2D_simulator.getWorld(), new Vector2(0, (CoreValues_Static.VIRTUAL_HEIGHT)), new Vector2(10, (CoreValues_Static.VIRTUAL_HEIGHT/2) ), 0f, Obstacle.Type.REGULAR);
-        Obstacle wall_right =  new Obstacle(box2D_simulator.getWorld(), new Vector2(CoreValues_Static.VIRTUAL_WIDTH, (CoreValues_Static.VIRTUAL_HEIGHT)), new Vector2((CoreValues_Static.VIRTUAL_WIDTH) - 10, (CoreValues_Static.VIRTUAL_HEIGHT)/2 ), 0f, Obstacle.Type.REGULAR);
-
-        obstacles.add(wall_upper);
-        obstacles.add(wall_bottom);
-        obstacles.add(wall_left);
-        obstacles.add(wall_right);
-
-
         Gdx.input.setInputProcessor(inputProcessor); // Registers input from our "inputProcessor" variable
 
     }
