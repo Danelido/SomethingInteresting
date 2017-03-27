@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -13,6 +14,8 @@ import com.smh.fam.somethinginteresting.game.Core.Box2D_Simulator;
 import com.smh.fam.somethinginteresting.game.Core.CoreValues_Static;
 import com.smh.fam.somethinginteresting.game.Core.Level;
 import com.smh.fam.somethinginteresting.game.Core.TextureStorage;
+import com.smh.fam.somethinginteresting.game.Game.Lights.LightManager;
+import com.smh.fam.somethinginteresting.game.Game.Lights.PointLight;
 import com.smh.fam.somethinginteresting.game.Game.Obstacle;
 import com.smh.fam.somethinginteresting.game.Game.Player;
 import com.smh.fam.somethinginteresting.game.Game.Target;
@@ -46,6 +49,10 @@ public class PlayState extends GameState {
     private Player player;
     private Array<Obstacle> obstacles;
     private Array<Target> targets;
+
+    private LightManager lightManager;
+    private PointLight playerLight;
+
 
     @Override
     public void init() {
@@ -88,6 +95,15 @@ public class PlayState extends GameState {
         obstacles.add(wall_right);
 
 
+        lightManager = new LightManager(box2D_simulator.getWorld());
+        lightManager.getRayHandler().setAmbientLight(0.1f, 0.1f, 0.1f, 0.5f);
+        lightManager.getRayHandler().setShadows(true);
+
+        lightManager.addPointLight(new Vector2(50,670),90, new Color(1.f,0.5f,.4f,0.70f),600,null);
+        lightManager.addPointLight(new Vector2(500,600),90, new Color(0.f,0.5f,1.0f,0.70f),250,"playerLight");
+
+        playerLight = lightManager.getLightByID("playerLight");
+
         Gdx.input.setInputProcessor(inputProcessor); // Registers input from our "inputProcessor" variable
 
     }
@@ -115,12 +131,15 @@ public class PlayState extends GameState {
         camera_momentum = camera_momentum.scl((float) Math.pow(camera_momentumDecay, deltaT));
         camera.translate(camera_momentum.x, camera_momentum.y, 0);
         box2DCamera.translate(camera_momentum.x /CoreValues_Static.PPM, camera_momentum.y/CoreValues_Static.PPM, 0);
+
+        camera.update(); // Recalculate matrices and such
+        box2DCamera.update();
+        lightManager.updateCamera(box2DCamera);
     }
 
     @Override
     public void render(SpriteBatch batch) {
-        camera.update(); // Recalculate matrices and such
-        box2DCamera.update();
+
 
         batch.setProjectionMatrix(camera.combined); // Give batch the calculated matrices, has to be done before batch.begin()
         shapeRenderer.setProjectionMatrix(camera.combined);
@@ -131,7 +150,8 @@ public class PlayState extends GameState {
         for (Obstacle obstacle: obstacles){
             obstacle.render(batch, shapeRenderer);
         }
-
+        playerLight.setPosition(player.getPosition().x , player.getPosition().y );
+        lightManager.pointLights_updateAndRender();
         batch.begin();
 
         for (Target target: targets) {
@@ -144,6 +164,11 @@ public class PlayState extends GameState {
 
         batch.end();
 
+
+
+
+
+
         //box2D_simulator.debugRenderer.render(box2D_simulator.getWorld(), box2DCamera.combined);
     }
 
@@ -154,6 +179,20 @@ public class PlayState extends GameState {
             public boolean keyDown(int keycode) {
                 // Reset camera zoom
                 if(Input.Keys.R == keycode) resetCameraZoom();
+
+                if(Input.Keys.W == keycode){
+                    lightManager.moveLights(0.f, 10.f);
+                }
+                    if(Input.Keys.A == keycode){
+                        lightManager.moveLights(-10.f, 0.f);
+                    }
+                        if(Input.Keys.S == keycode){
+                            lightManager.moveLights(0.f, -10.f);
+                        }
+                            if(Input.Keys.D == keycode){
+                                lightManager.moveLights(10.f, 0.f);
+                            }
+
                 return false;
             }
 
@@ -213,10 +252,13 @@ public class PlayState extends GameState {
     {
         player.dispose();
         shapeRenderer.dispose();
+        lightManager.disposeAll();
+
     }
 
     private void zoomCamera(float amount){
         camera.zoom += amount;
+        box2DCamera.zoom += amount;
         player.setCameraZoom(camera.zoom);
     }
     private void resetCameraZoom(){

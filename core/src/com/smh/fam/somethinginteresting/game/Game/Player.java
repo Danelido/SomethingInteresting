@@ -79,7 +79,7 @@ public class Player {
         fixtureDef.friction = 0.4f;
         fixtureDef.restitution = 0.3f;
 
-        Fixture fixture = simulationBody.createFixture(fixtureDef);
+        simulationBody.createFixture(fixtureDef);
 
         boxShape.dispose();
 
