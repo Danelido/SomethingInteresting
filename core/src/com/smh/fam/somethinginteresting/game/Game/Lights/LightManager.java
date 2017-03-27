@@ -38,10 +38,10 @@ public class LightManager {
             if (!pointLights.isEmpty()) {
                 rayHandler.setCombinedMatrix(
                         box2dCamera.combined,
-                        box2dCamera.position.x ,
+                        box2dCamera.position.x,
                         box2dCamera.position.y,
-                        box2dCamera.viewportWidth  ,
-                        box2dCamera.viewportHeight );
+                        box2dCamera.viewportWidth * box2dCamera.zoom,
+                        box2dCamera.viewportHeight * box2dCamera.zoom);
             }
         }
 
