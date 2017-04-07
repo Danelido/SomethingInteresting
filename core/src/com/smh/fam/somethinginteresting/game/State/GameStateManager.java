@@ -13,10 +13,9 @@ public class GameStateManager {
 
     private Stack<GameState> Gamestates;
 
-        public GameStateManager(GdxGameCore gameCore)
+        public GameStateManager()
         {
             Gamestates = new Stack<GameState>();
-            Gamestates.push(new PlayState(this)); // Start playstate when project is started up
         }
 
         public void update()
@@ -36,5 +35,14 @@ public class GameStateManager {
             if(!Gamestates.empty())
                 Gamestates.peek().dispose();
         }
+
+        public void changeStateTo(GameState newState)
+        {
+            if(!Gamestates.empty()){
+                Gamestates.pop();
+            }
+            Gamestates.push(newState);
+        }
+
 
 }

@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.smh.fam.somethinginteresting.game.State.GameStateManager;
+import com.smh.fam.somethinginteresting.menu.Core.MenuState;
 
 public class GdxGameCore extends ApplicationAdapter {
 
@@ -13,7 +14,8 @@ public class GdxGameCore extends ApplicationAdapter {
 
 	@Override
 	public void create () {
-		gsm = new GameStateManager(this);
+		gsm = new GameStateManager();
+		gsm.changeStateTo(new MenuState(gsm));
 		batch = new SpriteBatch();
 	}
 

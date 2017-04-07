@@ -42,7 +42,7 @@ public class PlayState extends GameState {
     private Vector2 camera_momentum = new Vector2(0.0f, 0.0f);
     private float camera_momentumDecay = 0.001f;
 
-    protected PlayState(GameStateManager gsm) {
+    public PlayState(GameStateManager gsm) {
         super(gsm);
         ACCELEROMETER_AVAILABLE = Gdx.input.isPeripheralAvailable(Input.Peripheral.Accelerometer) && false;
     }
