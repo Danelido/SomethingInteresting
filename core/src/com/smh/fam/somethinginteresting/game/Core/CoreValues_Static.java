@@ -15,7 +15,7 @@ public class CoreValues_Static {
 
     // Our target resolution, the screen can by any size but this is our "game screen size"
     public static final float VIRTUAL_WIDTH =  (1280);
-    public static final float VIRTUAL_HEIGHT = (VIRTUAL_WIDTH / 16 * 9); // 16:9 format
+    public static final float VIRTUAL_HEIGHT = ((VIRTUAL_WIDTH / 16) * 9); // 16:9 format
 
     public static final float FORCE_MULTIPLYER_CONSTANT = 1.50f; // increasing this will make the force stronger faster when draggin finger.
     public static final float FORCE_MAX = 3.0f; // Max force, otherwise it will fly around the map like a retarded owl

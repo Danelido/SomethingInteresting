@@ -10,7 +10,16 @@ import com.badlogic.gdx.math.Vector2;
 public class CoordinateTransformer {
 
 
-    // Convert regular screen coords to game relative coords
+    public static Vector2 convertGameCoordToBatchCoords(Vector2 coordinates)
+    {
+          Vector2 temp = new Vector2();
+          temp.x = (coordinates.x - CoreValues_Static.VIRTUAL_WIDTH/2);
+          temp.y = (CoreValues_Static.VIRTUAL_HEIGHT/2) - coordinates.y;
+
+        return temp;
+    }
+
+    // Convert regular screen coords to world relative coords
     public static Vector2 convertToGameCoords(int x, int y, float cameraZoomAmount)
     {
         if(Float.isNaN(cameraZoomAmount))cameraZoomAmount = 1.0f;
@@ -21,26 +30,7 @@ public class CoordinateTransformer {
         return new Vector2(gx,gy);
     }
 
-    public static Vector2 convertToGameCoords(float x, float y, float cameraZoomAmount)
-    {
-        if(Float.isNaN(cameraZoomAmount))cameraZoomAmount = 1.0f;
-        float gx = ((x / (float)(Gdx.graphics.getWidth()) ) * (CoreValues_Static.VIRTUAL_WIDTH * cameraZoomAmount));
-        float gy = ((y / (float)(Gdx.graphics.getHeight()) ) * (CoreValues_Static.VIRTUAL_HEIGHT * cameraZoomAmount));
-
-        return new Vector2(gx,gy);
-    }
-
-    public static Vector2 convertToGameCoords(Vector2 xy, float cameraZoomAmount)
-    {
-        if(Float.isNaN(cameraZoomAmount))cameraZoomAmount = 1.0f;
-        Vector2 temp = new Vector2();
-        temp.x = ((xy.x / (float)(Gdx.graphics.getWidth()) ) * (CoreValues_Static.VIRTUAL_WIDTH * cameraZoomAmount));
-        temp.y = ((xy.y / (float)(Gdx.graphics.getHeight()) ) * (CoreValues_Static.VIRTUAL_HEIGHT * cameraZoomAmount));
-
-        return temp;
-    }
-
-    // Translate relative game coord to box2d coord system
+    // convert world coord to box2d coord system
     public static Vector2 convertFromGameCoordsToBox2DCoords(Vector2 xy, float cameraZoomAmount)
     {
         if(Float.isNaN(cameraZoomAmount))cameraZoomAmount = 1.0f;
@@ -71,15 +61,6 @@ public class CoordinateTransformer {
         return temp;
     }
 
-    public static Vector2 box2DCoordinatesToWorldCoordinates(float x, float y)
-    {
-        Vector2 temp = new Vector2();
-        temp.x = (x * CoreValues_Static.PPM);
-        temp.y = (y * CoreValues_Static.PPM);
-
-        return temp;
-    }
-
     // transform box2d coordinates to screen coordinates
     public static Vector2 ScreenTexturePosition(Vector2 position, Vector2 size )
     {
@@ -88,6 +69,7 @@ public class CoordinateTransformer {
         temp.y = ((position.y * CoreValues_Static.PPM) - CoreValues_Static.VIRTUAL_HEIGHT/2);
         return temp;
     }
+
 
 
 }

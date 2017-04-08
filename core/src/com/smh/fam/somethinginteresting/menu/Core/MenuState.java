@@ -4,6 +4,7 @@ package com.smh.fam.somethinginteresting.menu.Core;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.smh.fam.somethinginteresting.game.Core.CoreValues_Static;
 import com.smh.fam.somethinginteresting.game.Core.TextureStorage;
@@ -11,6 +12,8 @@ import com.smh.fam.somethinginteresting.game.State.GameState;
 import com.smh.fam.somethinginteresting.game.State.GameStateManager;
 import com.smh.fam.somethinginteresting.menu.Managers.SubmenuManager;
 import com.smh.fam.somethinginteresting.menu.Submenus.Submenu_main;
+
+import java.io.FileNotFoundException;
 
 /**
  * Created by Alexander on 2017-04-07.
@@ -26,9 +29,10 @@ public class MenuState extends GameState {
 
     private InputProcessor inputProcessor;
     private OrthographicCamera camera;
-    private TextureStorage textureStorage;
+    public static TextureStorage textureStorage;
     private SubmenuManager smm;
 
+    private Texture backgroundImage;
 
 
     public MenuState(GameStateManager gsm) {super(gsm);}
@@ -38,9 +42,15 @@ public class MenuState extends GameState {
         inputHandler();
         camera = new OrthographicCamera(CoreValues_Static.VIRTUAL_WIDTH, CoreValues_Static.VIRTUAL_HEIGHT);
         textureStorage = new TextureStorage();
+
+        try {
+            backgroundImage = textureStorage.getTexture("menuResources/background.png");
+        }catch(FileNotFoundException e){
+            e.printStackTrace();
+        }
+
         smm = new SubmenuManager();
         smm.changeSubmenuTo(new Submenu_main(gsm,smm,camera, textureStorage));
-
         Gdx.input.setInputProcessor(inputProcessor); // Registers input from our "inputProcessor" variable
     }
 
@@ -54,6 +64,7 @@ public class MenuState extends GameState {
     public void render(SpriteBatch batch) {
         batch.setProjectionMatrix(camera.combined); // Give batch the calculated matrices, has to be done before batch.begin()
         batch.begin();
+        batch.draw(backgroundImage,-CoreValues_Static.VIRTUAL_WIDTH/2,-CoreValues_Static.VIRTUAL_HEIGHT/2, CoreValues_Static.VIRTUAL_WIDTH, CoreValues_Static.VIRTUAL_HEIGHT);
         smm.render(batch);
         batch.end();
     }
