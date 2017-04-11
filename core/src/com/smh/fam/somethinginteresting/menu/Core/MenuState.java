@@ -6,12 +6,14 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.smh.fam.somethinginteresting.game.Core.CoreValues_Static;
 import com.smh.fam.somethinginteresting.game.Core.TextureStorage;
 import com.smh.fam.somethinginteresting.game.State.GameState;
 import com.smh.fam.somethinginteresting.game.State.GameStateManager;
 import com.smh.fam.somethinginteresting.menu.Managers.SubmenuManager;
 import com.smh.fam.somethinginteresting.menu.Submenus.Submenu_main;
+import com.smh.fam.somethinginteresting.menu.Utils.TRANSITIONTYPE;
 
 import java.io.FileNotFoundException;
 
@@ -34,6 +36,8 @@ public class MenuState extends GameState {
 
     private Texture backgroundImage;
 
+     private Vector2 camera_momentum = new Vector2(0.0f, 0.0f);
+     private float camera_momentumDecay = 0.001f;
 
     public MenuState(GameStateManager gsm) {super(gsm);}
 
@@ -49,14 +53,18 @@ public class MenuState extends GameState {
             e.printStackTrace();
         }
 
-        smm = new SubmenuManager();
-        smm.changeSubmenuTo(new Submenu_main(gsm,smm,camera, textureStorage));
+        smm = new SubmenuManager(camera);
+        smm.changeSubmenuTo(new Submenu_main(gsm,smm,camera, textureStorage), TRANSITIONTYPE.NONE);
         Gdx.input.setInputProcessor(inputProcessor); // Registers input from our "inputProcessor" variable
     }
 
     @Override
     public void update() {
+        float deltaT = Gdx.graphics.getDeltaTime();
+        smm.updateTransition();
+
         camera.update(); // Recalculate matrices and such
+
         smm.update();
     }
 
@@ -64,7 +72,7 @@ public class MenuState extends GameState {
     public void render(SpriteBatch batch) {
         batch.setProjectionMatrix(camera.combined); // Give batch the calculated matrices, has to be done before batch.begin()
         batch.begin();
-        batch.draw(backgroundImage,-CoreValues_Static.VIRTUAL_WIDTH/2,-CoreValues_Static.VIRTUAL_HEIGHT/2, CoreValues_Static.VIRTUAL_WIDTH, CoreValues_Static.VIRTUAL_HEIGHT);
+        batch.draw(backgroundImage,((-CoreValues_Static.VIRTUAL_WIDTH * camera.zoom)/2) + camera.position.x,((-CoreValues_Static.VIRTUAL_HEIGHT* camera.zoom)/2) + camera.position.y, CoreValues_Static.VIRTUAL_WIDTH * camera.zoom, CoreValues_Static.VIRTUAL_HEIGHT * camera.zoom);
         smm.render(batch);
         batch.end();
     }

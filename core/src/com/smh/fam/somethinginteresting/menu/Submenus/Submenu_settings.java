@@ -4,10 +4,8 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.smh.fam.somethinginteresting.game.Core.CoordinateTransformer;
-import com.smh.fam.somethinginteresting.game.Core.CoreValues_Static;
 import com.smh.fam.somethinginteresting.game.Core.TextureStorage;
 import com.smh.fam.somethinginteresting.game.State.GameStateManager;
-import com.smh.fam.somethinginteresting.game.State.PlayState;
 import com.smh.fam.somethinginteresting.menu.Managers.SubmenuManager;
 import com.smh.fam.somethinginteresting.menu.Utils.BUTTON_LIST;
 import com.smh.fam.somethinginteresting.menu.Utils.Button;
@@ -16,20 +14,19 @@ import com.smh.fam.somethinginteresting.menu.Utils.TRANSITIONTYPE;
 import java.util.ArrayList;
 
 /**
- * Created by Alexander on 2017-04-07.
+ * Created by Alexander on 2017-04-11.
  */
 
-public class Submenu_main extends Submenu {
-
+public class Submenu_settings extends Submenu {
     private ArrayList<Button> buttons;
 
-    public Submenu_main(GameStateManager gsm, SubmenuManager smm, Camera camera,TextureStorage textureStorage) {super(gsm, smm, camera,textureStorage);}
+    public Submenu_settings(GameStateManager gsm, SubmenuManager smm, Camera camera, TextureStorage textureStorage) {super(gsm, smm, camera, textureStorage);}
 
     @Override
     public void init() {
         buttons = new ArrayList<Button>();
-        addButton((int)CoreValues_Static.VIRTUAL_WIDTH/2, (int)(CoreValues_Static.VIRTUAL_HEIGHT/2)- 50,260,100, "menuResources/button_play.png", true, BUTTON_LIST.SUBMENU_MAIN_PLAY);
-        addButton((int)CoreValues_Static.VIRTUAL_WIDTH/2, (int)CoreValues_Static.VIRTUAL_HEIGHT/2 + 100,260,100, "menuResources/button_settings.png", true, BUTTON_LIST.SUBMENU_MAIN_SETTINGS);
+        addButton(10,80,230,70, "menuResources/button_back.png", false, BUTTON_LIST.SUBMENU_SETTINGS_BACK);
+
     }
 
     @Override
@@ -51,17 +48,14 @@ public class Submenu_main extends Submenu {
     private void handleButtonEvents(BUTTON_LIST _BUTTON_TYPE)
     {
         switch(_BUTTON_TYPE ){
-            // Play
-            case SUBMENU_MAIN_PLAY:
-                gsm.changeStateTo(new PlayState(gsm)); // Temporary
-                break;
-            // Settings
-            case SUBMENU_MAIN_SETTINGS:
-                smm.changeSubmenuTo(new Submenu_settings(gsm,smm,camera,textureStorage), TRANSITIONTYPE.FROM_RIGHT);
+            // Back button
+            case SUBMENU_SETTINGS_BACK:
+                smm.changeSubmenuTo(new Submenu_main(gsm,smm,camera,textureStorage), TRANSITIONTYPE.FROM_LEFT);
                 break;
 
         }
     }
+
 
     @Override
     public void fingerTouchingScreen(int screenX, int screenY, int pointer, int button) {
@@ -78,6 +72,7 @@ public class Submenu_main extends Submenu {
     @Override
     public void fingerReleasedFromScreen(int screenX, int screenY, int pointer, int button) {
         Vector2 touched = CoordinateTransformer.convertToGameCoords(screenX, screenY, 1.0f);
+       camera.position.set(0,0,0);
         if(!buttons.isEmpty()){
             for(int i = 0; i < buttons.size(); i++) {
                 if(buttons.get(i).isActivated()) {
@@ -96,12 +91,6 @@ public class Submenu_main extends Submenu {
 
     }
 
-    @Override
-    public void dispose() {
-
-    }
-
-
     private void addButton(int x, int y, int width, int height, String textureFilePath, boolean positionOriginCentered, BUTTON_LIST _BUTTON_TYPE)
     {
         buttons.add(new Button(
@@ -112,4 +101,11 @@ public class Submenu_main extends Submenu {
                 _BUTTON_TYPE));
     }
 
+
+
+
+    @Override
+    public void dispose() {
+
+    }
 }

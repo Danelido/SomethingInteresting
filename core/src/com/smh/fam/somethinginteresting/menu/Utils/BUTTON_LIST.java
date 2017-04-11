@@ -8,6 +8,9 @@ public enum BUTTON_LIST
 {
         // Submenu_main buttons
         SUBMENU_MAIN_PLAY,
-        SUBMENU_MAIN_SETTINGS
+        SUBMENU_MAIN_SETTINGS,
+
+        // Submenu_settings buttons
+        SUBMENU_SETTINGS_BACK
 
 }
