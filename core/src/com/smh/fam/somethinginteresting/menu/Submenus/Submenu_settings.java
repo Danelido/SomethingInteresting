@@ -7,9 +7,9 @@ import com.smh.fam.somethinginteresting.game.Core.CoordinateTransformer;
 import com.smh.fam.somethinginteresting.game.Core.TextureStorage;
 import com.smh.fam.somethinginteresting.game.State.GameStateManager;
 import com.smh.fam.somethinginteresting.menu.Managers.SubmenuManager;
-import com.smh.fam.somethinginteresting.menu.Utils.BUTTON_LIST;
+import com.smh.fam.somethinginteresting.menu.Enums.BUTTON_LIST;
 import com.smh.fam.somethinginteresting.menu.Utils.Button;
-import com.smh.fam.somethinginteresting.menu.Utils.TRANSITIONTYPE;
+import com.smh.fam.somethinginteresting.menu.Enums.TRANSITIONTYPE;
 
 import java.util.ArrayList;
 
@@ -17,7 +17,7 @@ import java.util.ArrayList;
  * Created by Alexander on 2017-04-11.
  */
 
-public class Submenu_settings extends Submenu {
+public class Submenu_settings extends com.smh.fam.somethinginteresting.menu.Abstracts.Submenu {
     private ArrayList<Button> buttons;
 
     public Submenu_settings(GameStateManager gsm, SubmenuManager smm, Camera camera, TextureStorage textureStorage) {super(gsm, smm, camera, textureStorage);}

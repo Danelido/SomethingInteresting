@@ -7,11 +7,10 @@ import com.smh.fam.somethinginteresting.game.Core.CoordinateTransformer;
 import com.smh.fam.somethinginteresting.game.Core.CoreValues_Static;
 import com.smh.fam.somethinginteresting.game.Core.TextureStorage;
 import com.smh.fam.somethinginteresting.game.State.GameStateManager;
-import com.smh.fam.somethinginteresting.game.State.PlayState;
+import com.smh.fam.somethinginteresting.menu.Enums.BUTTON_LIST;
+import com.smh.fam.somethinginteresting.menu.Enums.TRANSITIONTYPE;
 import com.smh.fam.somethinginteresting.menu.Managers.SubmenuManager;
-import com.smh.fam.somethinginteresting.menu.Utils.BUTTON_LIST;
 import com.smh.fam.somethinginteresting.menu.Utils.Button;
-import com.smh.fam.somethinginteresting.menu.Utils.TRANSITIONTYPE;
 
 import java.util.ArrayList;
 
@@ -19,7 +18,7 @@ import java.util.ArrayList;
  * Created by Alexander on 2017-04-07.
  */
 
-public class Submenu_main extends Submenu {
+public class Submenu_main extends com.smh.fam.somethinginteresting.menu.Abstracts.Submenu {
 
     private ArrayList<Button> buttons;
 
@@ -53,7 +52,7 @@ public class Submenu_main extends Submenu {
         switch(_BUTTON_TYPE ){
             // Play
             case SUBMENU_MAIN_PLAY:
-                gsm.changeStateTo(new PlayState(gsm)); // Temporary
+               smm.changeSubmenuTo(new Submenu_play(gsm, smm, camera, textureStorage), TRANSITIONTYPE.FROM_RIGHT);
                 break;
             // Settings
             case SUBMENU_MAIN_SETTINGS:

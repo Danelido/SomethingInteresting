@@ -1,4 +1,4 @@
-package com.smh.fam.somethinginteresting.menu.Utils;
+package com.smh.fam.somethinginteresting.menu.Enums;
 
 /**
  * Created by Alexander on 2017-04-08.
@@ -11,6 +11,10 @@ public enum BUTTON_LIST
         SUBMENU_MAIN_SETTINGS,
 
         // Submenu_settings buttons
-        SUBMENU_SETTINGS_BACK
+        SUBMENU_SETTINGS_BACK,
+
+
+        // Submenu_play buttons
+        SUBMENU_PLAY_HOME
 
 }

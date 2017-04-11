@@ -1,4 +1,4 @@
-package com.smh.fam.somethinginteresting.menu.Utils;
+package com.smh.fam.somethinginteresting.menu.Enums;
 
 /**
  * Created by Alexander on 2017-04-11.

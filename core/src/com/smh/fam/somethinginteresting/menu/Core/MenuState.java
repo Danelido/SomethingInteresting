@@ -6,14 +6,13 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 import com.smh.fam.somethinginteresting.game.Core.CoreValues_Static;
 import com.smh.fam.somethinginteresting.game.Core.TextureStorage;
 import com.smh.fam.somethinginteresting.game.State.GameState;
 import com.smh.fam.somethinginteresting.game.State.GameStateManager;
+import com.smh.fam.somethinginteresting.menu.Enums.TRANSITIONTYPE;
 import com.smh.fam.somethinginteresting.menu.Managers.SubmenuManager;
 import com.smh.fam.somethinginteresting.menu.Submenus.Submenu_main;
-import com.smh.fam.somethinginteresting.menu.Utils.TRANSITIONTYPE;
 
 import java.io.FileNotFoundException;
 
@@ -36,10 +35,10 @@ public class MenuState extends GameState {
 
     private Texture backgroundImage;
 
-     private Vector2 camera_momentum = new Vector2(0.0f, 0.0f);
-     private float camera_momentumDecay = 0.001f;
-
-    public MenuState(GameStateManager gsm) {super(gsm);}
+    public MenuState(GameStateManager gsm) {
+        super(gsm);
+        init();
+    }
 
     @Override
     public void init() {
@@ -60,7 +59,6 @@ public class MenuState extends GameState {
 
     @Override
     public void update() {
-        float deltaT = Gdx.graphics.getDeltaTime();
         smm.updateTransition();
 
         camera.update(); // Recalculate matrices and such

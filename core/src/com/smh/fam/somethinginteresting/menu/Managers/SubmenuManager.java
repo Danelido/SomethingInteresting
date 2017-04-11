@@ -3,8 +3,8 @@ package com.smh.fam.somethinginteresting.menu.Managers;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.smh.fam.somethinginteresting.game.Core.CoreValues_Static;
-import com.smh.fam.somethinginteresting.menu.Submenus.Submenu;
-import com.smh.fam.somethinginteresting.menu.Utils.TRANSITIONTYPE;
+import com.smh.fam.somethinginteresting.menu.Abstracts.Submenu;
+import com.smh.fam.somethinginteresting.menu.Enums.TRANSITIONTYPE;
 
 import java.util.Stack;
 
@@ -46,7 +46,6 @@ public class SubmenuManager {
             if (_TRANSITIONTYPE == TRANSITIONTYPE.FROM_RIGHT) {
                 if (camera.position.x < 0) {
                     camera.translate(TRANSITION_MOVECONSTANT,0,0);
-                    //camera.position.x += TRANSITION_CONSTANT;
                     if (camera.position.x >= 0) {
                         camera.position.x = 0;
                         _TRANSITIONTYPE = TRANSITIONTYPE.NONE;
@@ -57,7 +56,6 @@ public class SubmenuManager {
             if (_TRANSITIONTYPE == TRANSITIONTYPE.FROM_LEFT) {
                 if (camera.position.x > 0) {
                     camera.translate(-TRANSITION_MOVECONSTANT,0,0);
-                    //camera.position.x -= TRANSITION_CONSTANT;
                     if (camera.position.x <= 0) {
                         camera.position.x = 0;
                         _TRANSITIONTYPE = TRANSITIONTYPE.NONE;

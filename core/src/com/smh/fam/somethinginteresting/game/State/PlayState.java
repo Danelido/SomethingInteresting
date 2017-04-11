@@ -42,9 +42,13 @@ public class PlayState extends GameState {
     private Vector2 camera_momentum = new Vector2(0.0f, 0.0f);
     private float camera_momentumDecay = 0.001f;
 
-    public PlayState(GameStateManager gsm) {
+    private String pathToLevel;
+
+    public PlayState(GameStateManager gsm, String pathToLevel) {
         super(gsm);
+        this.pathToLevel = pathToLevel;
         ACCELEROMETER_AVAILABLE = Gdx.input.isPeripheralAvailable(Input.Peripheral.Accelerometer) && false;
+        init();
     }
 
     private Player player;
@@ -69,7 +73,7 @@ public class PlayState extends GameState {
         shapeRenderer = new ShapeRenderer();
 
         Level level = new Level(box2D_simulator.getWorld(), textureStorage);
-        level.readFromXML("levels/level_1.xml");
+        level.readFromXML(pathToLevel);
 
         box2D_simulator.setGravity(level.getGravityVector());
         obstacles = level.getObstacles();
