@@ -31,7 +31,7 @@ public class Earth extends Stage{
         container_size_x = 150f;
         container_size_y = 100f;
         int lvl = 1;
-      
+
         for(int y = 1; y <= 2; y++)
         {
             for(int x = 1; x <= 5; x++)

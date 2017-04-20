@@ -47,7 +47,7 @@ public class MenuState extends GameState {
         textureStorage = new TextureStorage();
 
         try {
-            backgroundImage = textureStorage.getTexture("menuResources/background.png");
+            backgroundImage = textureStorage.getTexture("menuResources/Background.png");
         }catch(FileNotFoundException e){
             e.printStackTrace();
         }

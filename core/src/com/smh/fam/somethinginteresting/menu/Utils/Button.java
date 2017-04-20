@@ -44,6 +44,7 @@ public class Button {
         if(centerPositionOrigin) {
             this.position.sub(size.x/2, -size.y/2);
         }
+        if(texture == null)System.out.println("Couldn't find texture at: " + PathToTexture);
         openGLposition = CoordinateTransformer.convertGameCoordToBatchCoords(this.position);
 
     }

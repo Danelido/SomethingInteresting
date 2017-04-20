@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -17,8 +16,6 @@ import com.smh.fam.somethinginteresting.game.Core.CoreValues_Static;
 import com.smh.fam.somethinginteresting.game.Core.TextureStorage;
 
 import java.io.FileNotFoundException;
-
-
 
 import static com.smh.fam.somethinginteresting.game.Core.RenderingHelper.convertToBatchPlacement;
 
@@ -75,7 +72,7 @@ public class Player {
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = boxShape;
-        fixtureDef.density = 0.5f;
+        fixtureDef.density = 0.8f;
         fixtureDef.friction = 0.4f;
         fixtureDef.restitution = 0.3f;
 
@@ -128,7 +125,7 @@ public class Player {
         float x =  (force_on_player_location.x - fingerReleased.x) * CoreValues_Static.PPM;
         float y =  (force_on_player_location.y - fingerReleased.y) * CoreValues_Static.PPM;
 
-        Vector2 direction = new Vector2(x, y).nor().scl(-1f);
+        Vector2 direction = new Vector2(x, y).nor().scl(1f);
         double c = new Vector2(x,y).len();
 
         float force = (float)(c * CoreValues_Static.FORCE_MULTIPLYER_CONSTANT) / CoreValues_Static.PPM;
@@ -223,7 +220,7 @@ public class Player {
         // force into the minimum absolute value residue class, so that -180 < angle <= 180
         if (temp > 180) temp -= 360;
 
-        return temp;
+        return (temp + 180);
     }
 
     public void dispose()

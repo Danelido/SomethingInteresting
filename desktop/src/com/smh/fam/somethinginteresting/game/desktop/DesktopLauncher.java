@@ -11,5 +11,6 @@ public class DesktopLauncher {
 		config.title = "Something interesting";
 		config.width = 1280;
 		config.height = 720;
+		config.samples = 3;
 	}
 }

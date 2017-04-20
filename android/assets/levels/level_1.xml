@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <level>
     <player>
-        <pos>100.0</pos>
-        <pos>200.0</pos>
+        <pos>500.0</pos>
+        <pos>600.0</pos>
     </player>
 
     <world>
@@ -16,10 +16,10 @@
     </target>
 
     <blackhole>
-        <pos>800</pos>
-        <pos>400</pos>
+        <pos>900</pos> <!-- X coordinate -->
+        <pos>400</pos> <!-- Y coordinate -->
 
-        <radius>50</radius> <!-- Affects black hole pull-force -->
+        <radius>70</radius> <!-- Affects black hole pull-force -->
     </blackhole>
 
     <!-- Test obstacle -->

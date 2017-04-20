@@ -1,7 +1,6 @@
 package com.smh.fam.somethinginteresting.game.State;
 
 import com.badlogic.gdx.Gdx;
-
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
@@ -14,12 +13,14 @@ import com.smh.fam.somethinginteresting.game.Core.Box2D_Simulator;
 import com.smh.fam.somethinginteresting.game.Core.CoreValues_Static;
 import com.smh.fam.somethinginteresting.game.Core.Level;
 import com.smh.fam.somethinginteresting.game.Core.TextureStorage;
+import com.smh.fam.somethinginteresting.game.Game.BlackHole;
 import com.smh.fam.somethinginteresting.game.Game.Lights.LightManager;
 import com.smh.fam.somethinginteresting.game.Game.Lights.PointLight;
-import com.smh.fam.somethinginteresting.game.Game.BlackHole;
 import com.smh.fam.somethinginteresting.game.Game.Obstacle;
 import com.smh.fam.somethinginteresting.game.Game.Player;
 import com.smh.fam.somethinginteresting.game.Game.Target;
+
+import static com.badlogic.gdx.Gdx.input;
 
 
 /**
@@ -37,6 +38,7 @@ public class PlayState extends GameState {
     private InputProcessor inputProcessor;
 
     private final boolean ACCELEROMETER_AVAILABLE;
+    private float normalGravity , flippedGravity;
 
     private Vector2 camera_firstTouch = new Vector2();
     private Vector2 camera_momentum = new Vector2(0.0f, 0.0f);
@@ -47,7 +49,7 @@ public class PlayState extends GameState {
     public PlayState(GameStateManager gsm, String pathToLevel) {
         super(gsm);
         this.pathToLevel = pathToLevel;
-        ACCELEROMETER_AVAILABLE = Gdx.input.isPeripheralAvailable(Input.Peripheral.Accelerometer) && false;
+        ACCELEROMETER_AVAILABLE = input.isPeripheralAvailable(Input.Peripheral.Accelerometer) && true;
         init();
     }
 
@@ -75,14 +77,15 @@ public class PlayState extends GameState {
         Level level = new Level(box2D_simulator.getWorld(), textureStorage);
         level.readFromXML(pathToLevel);
 
+        normalGravity = level.getGravityVector().y;
+        flippedGravity = -normalGravity;
+
         box2D_simulator.setGravity(level.getGravityVector());
         obstacles = level.getObstacles();
         targets = level.getTargets();
         blackHoles = level.getBlackHoles();
 
-        //player = new Player(box2D_simulator.getWorld(), textureStorage, level.getPlayerPosition(), box2DCamera);
-        player = new Player(box2D_simulator.getWorld(), textureStorage, new Vector2(500,600), box2DCamera);
-
+        player = new Player(box2D_simulator.getWorld(), textureStorage, level.getPlayerPosition(), box2DCamera);
 
         Obstacle obstacle =  new Obstacle(box2D_simulator.getWorld(), new Vector2(500, 100.f), new Vector2(520.f, 200.f), 45f, Obstacle.Type.REGULAR);
         Obstacle obstacle2 = new Obstacle(box2D_simulator.getWorld(), new Vector2(500, 200.f), new Vector2(600.f, 210.f), 2f, Obstacle.Type.REGULAR);
@@ -92,7 +95,7 @@ public class PlayState extends GameState {
         
         //Temporary walls around game area.
 
-        Obstacle wall_upper =  new Obstacle(box2D_simulator.getWorld(), new Vector2(CoreValues_Static.VIRTUAL_WIDTH/2, (CoreValues_Static.VIRTUAL_HEIGHT)), new Vector2(CoreValues_Static.VIRTUAL_WIDTH, (CoreValues_Static.VIRTUAL_HEIGHT ) + 10 ), 0f, Obstacle.Type.REGULAR);
+       /* Obstacle wall_upper =  new Obstacle(box2D_simulator.getWorld(), new Vector2(CoreValues_Static.VIRTUAL_WIDTH/2, (CoreValues_Static.VIRTUAL_HEIGHT)), new Vector2(CoreValues_Static.VIRTUAL_WIDTH, (CoreValues_Static.VIRTUAL_HEIGHT ) + 10 ), 0f, Obstacle.Type.REGULAR);
         Obstacle wall_bottom =  new Obstacle(box2D_simulator.getWorld(), new Vector2(CoreValues_Static.VIRTUAL_WIDTH/2, 0), new Vector2(CoreValues_Static.VIRTUAL_WIDTH,  10 ), 0f, Obstacle.Type.REGULAR);
         Obstacle wall_left =  new Obstacle(box2D_simulator.getWorld(), new Vector2(0, (CoreValues_Static.VIRTUAL_HEIGHT)), new Vector2(10, (CoreValues_Static.VIRTUAL_HEIGHT/2) ), 0f, Obstacle.Type.REGULAR);
         Obstacle wall_right =  new Obstacle(box2D_simulator.getWorld(), new Vector2(CoreValues_Static.VIRTUAL_WIDTH, (CoreValues_Static.VIRTUAL_HEIGHT)), new Vector2((CoreValues_Static.VIRTUAL_WIDTH) - 10, (CoreValues_Static.VIRTUAL_HEIGHT)/2 ), 0f, Obstacle.Type.REGULAR);
@@ -100,7 +103,7 @@ public class PlayState extends GameState {
         obstacles.add(wall_upper);
         obstacles.add(wall_bottom);
         obstacles.add(wall_left);
-        obstacles.add(wall_right);
+        obstacles.add(wall_right);*/
 
 
         lightManager = new LightManager(box2D_simulator.getWorld());
@@ -112,7 +115,7 @@ public class PlayState extends GameState {
 
         playerLight = lightManager.getLightByID("playerLight");
 
-        Gdx.input.setInputProcessor(inputProcessor); // Registers input from our "inputProcessor" variable
+        input.setInputProcessor(inputProcessor); // Registers input from our "inputProcessor" variable
 
     }
 
@@ -122,8 +125,17 @@ public class PlayState extends GameState {
 
         box2D_simulator.simulate(deltaT);
         if (ACCELEROMETER_AVAILABLE){
-            Vector2 gravityVec = new Vector2(-Gdx.input.getAccelerometerY(), Gdx.input.getAccelerometerX());
-            box2D_simulator.setGravity(gravityVec);
+
+            if(-Gdx.input.getAccelerometerX() < -5.0f && box2D_simulator.getGravity().y != normalGravity)
+            {
+                alterGravity(normalGravity);
+            }else if(-Gdx.input.getAccelerometerX() > 5.0f && box2D_simulator.getGravity().y != flippedGravity)
+            {
+                alterGravity(flippedGravity);
+            }
+
+
+
         }
 
         Vector2 summedForce = new Vector2(0,0);
@@ -141,7 +153,7 @@ public class PlayState extends GameState {
 
         camera.update(); // Recalculate matrices and such
         box2DCamera.update();
-        lightManager.updateCamera(box2DCamera);
+        //lightManager.updateCamera(box2DCamera);
     }
 
     @Override
@@ -158,7 +170,7 @@ public class PlayState extends GameState {
             obstacle.render(batch, shapeRenderer);
         }
         playerLight.setPosition(player.getPosition().x , player.getPosition().y );
-        lightManager.pointLights_updateAndRender();
+       // lightManager.pointLights_updateAndRender();
         batch.begin();
 
         for (Target target: targets) {
@@ -174,11 +186,6 @@ public class PlayState extends GameState {
         if(player.playerIsTargeted()) {player.displayForceDirection(batch);} // Render direction line above player
 
         batch.end();
-
-
-
-
-
 
         //box2D_simulator.debugRenderer.render(box2D_simulator.getWorld(), box2DCamera.combined);
     }
@@ -275,6 +282,12 @@ public class PlayState extends GameState {
     private void resetCameraZoom(){
         camera.zoom = 1.0f;
         player.setCameraZoom(camera.zoom);
+    }
+
+    private void alterGravity(float newGravityConstant)
+    {
+        Vector2 gravityVec = new Vector2(0.0f, newGravityConstant);
+        box2D_simulator.setGravity(gravityVec);
     }
 
 }

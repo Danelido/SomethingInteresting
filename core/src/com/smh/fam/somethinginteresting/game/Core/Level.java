@@ -8,12 +8,10 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.smh.fam.somethinginteresting.game.Game.BlackHole;
 import com.smh.fam.somethinginteresting.game.Game.Obstacle;
-import com.smh.fam.somethinginteresting.game.Game.Player;
 import com.smh.fam.somethinginteresting.game.Game.Target;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
